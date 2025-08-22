@@ -3,97 +3,149 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Novelite - Register</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <title>Novelite Registration</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f7f7f7;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+    }
+    .container {
+      background: white;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+      width: 450px;
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    label {
+      display: block;
+      margin: 10px 0 5px;
+      font-weight: bold;
+    }
+    input, select, textarea {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      outline: none;
+    }
+    input[type="file"] {
+      border: none;
+    }
+    .checkbox-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .checkbox-group label {
+      font-weight: normal;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 6px;
+      background: #6a1b9a;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #4a0072;
+    }
+    #preview {
+      display: none;
+      background: #f0f0f0;
+      padding: 15px;
+      border-radius: 10px;
+      margin-top: 20px;
+    }
+    #preview h3 {
+      margin-bottom: 10px;
+    }
+  </style>
 </head>
-<body class="bg-gray-50 flex items-center justify-center min-h-screen">
-  <div class="w-full max-w-2xl bg-white shadow-lg rounded-2xl p-8">
-    <h2 class="text-2xl font-bold text-center mb-6 text-gray-800">Create Your Novelite Account</h2>
+<body>
+  <div class="container">
+    <h2>Novelite Registration</h2>
+    <form id="registerForm">
+      <label for="name">Full Name</label>
+      <input type="text" id="name" name="name" required>
 
-    <form id="registerForm" class="space-y-6">
-      <!-- STEP 1: Account Setup -->
-      <div id="step1" class="space-y-4">
-        <h3 class="text-lg font-semibold text-gray-700">Account Information</h3>
-        <div>
-          <label class="block text-sm font-medium text-gray-600">Full Name</label>
-          <input type="text" class="w-full px-4 py-2 border rounded-lg" placeholder="Enter your full name" required>
-        </div>
-        <div>
-          <label class="block text-sm font-medium text-gray-600">Email</label>
-          <input type="email" class="w-full px-4 py-2 border rounded-lg" placeholder="Enter your email" required>
-        </div>
-        <div>
-          <label class="block text-sm font-medium text-gray-600">Password</label>
-          <input type="password" class="w-full px-4 py-2 border rounded-lg" placeholder="Enter your password" required>
-        </div>
-        <div>
-          <label class="block text-sm font-medium text-gray-600">Confirm Password</label>
-          <input type="password" class="w-full px-4 py-2 border rounded-lg" placeholder="Confirm your password" required>
-        </div>
-        <button type="button" onclick="nextStep()" class="w-full bg-purple-600 text-white py-2 rounded-lg hover:bg-purple-700">Next</button>
+      <label for="email">Email Address</label>
+      <input type="email" id="email" name="email" required>
+
+      <label for="password">Password</label>
+      <input type="password" id="password" name="password" required>
+
+      <label for="role">Role</label>
+      <select id="role" name="role" required>
+        <option value="Reader">Reader</option>
+        <option value="Writer">Writer</option>
+      </select>
+
+      <label>Specialized Genres</label>
+      <div class="checkbox-group">
+        <label><input type="checkbox" name="genre" value="Romance"> Romance</label>
+        <label><input type="checkbox" name="genre" value="Thriller"> Thriller</label>
+        <label><input type="checkbox" name="genre" value="Sci-Fi"> Sci-Fi</label>
+        <label><input type="checkbox" name="genre" value="Fantasy"> Fantasy</label>
+        <label><input type="checkbox" name="genre" value="Mystery"> Mystery</label>
+        <label><input type="checkbox" name="genre" value="Non-Fiction"> Non-Fiction</label>
       </div>
 
-      <!-- STEP 2: Profile Information -->
-      <div id="step2" class="hidden space-y-4">
-        <h3 class="text-lg font-semibold text-gray-700">Profile Information</h3>
-        <div>
-          <label class="block text-sm font-medium text-gray-600">Are you a:</label>
-          <select class="w-full px-4 py-2 border rounded-lg">
-            <option>Reader</option>
-            <option>Writer</option>
-            <option>Both</option>
-          </select>
-        </div>
-        <div>
-          <label class="block text-sm font-medium text-gray-600">Preferred Genres</label>
-          <select multiple class="w-full px-4 py-2 border rounded-lg">
-            <option>Romance</option>
-            <option>Thriller</option>
-            <option>Sci-Fi</option>
-            <option>Fantasy</option>
-            <option>Non-Fiction</option>
-            <option>Mystery</option>
-            <option>Horror</option>
-          </select>
-          <p class="text-xs text-gray-500 mt-1">Hold CTRL (Windows) or CMD (Mac) to select multiple.</p>
-        </div>
-        <div>
-          <label class="block text-sm font-medium text-gray-600">How did you hear about Novelite?</label>
-          <select class="w-full px-4 py-2 border rounded-lg">
-            <option>Friend / Referral</option>
-            <option>Social Media</option>
-            <option>Google</option>
-            <option>Advertisement</option>
-            <option>Other</option>
-          </select>
-        </div>
-        <div>
-          <label class="block text-sm font-medium text-gray-600">Short Bio (optional)</label>
-          <textarea class="w-full px-4 py-2 border rounded-lg" rows="3" placeholder="Tell us a little about yourself..."></textarea>
-        </div>
-        <div class="flex justify-between">
-          <button type="button" onclick="prevStep()" class="bg-gray-300 text-gray-700 py-2 px-6 rounded-lg hover:bg-gray-400">Back</button>
-          <button type="submit" class="bg-purple-600 text-white py-2 px-6 rounded-lg hover:bg-purple-700">Register</button>
-        </div>
+      <label for="referral">How did you hear about Novelite?</label>
+      <input type="text" id="referral" name="referral">
+
+      <label for="bio">Short Bio</label>
+      <textarea id="bio" name="bio" rows="3"></textarea>
+
+      <label for="photo">Upload Profile Picture</label>
+      <input type="file" id="photo" name="photo" accept="image/*">
+
+      <button type="button" onclick="showPreview()">Preview Details</button>
+
+      <div id="preview">
+        <h3>Confirm Your Details</h3>
+        <p><b>Name:</b> <span id="pName"></span></p>
+        <p><b>Email:</b> <span id="pEmail"></span></p>
+        <p><b>Role:</b> <span id="pRole"></span></p>
+        <p><b>Genres:</b> <span id="pGenres"></span></p>
+        <p><b>Referral:</b> <span id="pReferral"></span></p>
+        <p><b>Bio:</b> <span id="pBio"></span></p>
+        <p><b>Photo:</b> <span id="pPhoto"></span></p>
+        <button type="submit">Submit Registration</button>
       </div>
     </form>
   </div>
 
   <script>
-    function nextStep() {
-      document.getElementById("step1").classList.add("hidden");
-      document.getElementById("step2").classList.remove("hidden");
-    }
-    function prevStep() {
-      document.getElementById("step2").classList.add("hidden");
-      document.getElementById("step1").classList.remove("hidden");
-    }
+    function showPreview() {
+      document.getElementById("pName").innerText = document.getElementById("name").value;
+      document.getElementById("pEmail").innerText = document.getElementById("email").value;
+      document.getElementById("pRole").innerText = document.getElementById("role").value;
 
-    // Handle submission (fake verification for now)
-    document.getElementById("registerForm").addEventListener("submit", function(e) {
-      e.preventDefault();
-      alert("Registration submitted! A verification code will be sent to your email.");
-    });
+      let genres = [];
+      document.querySelectorAll('input[name="genre"]:checked').forEach(el => genres.push(el.value));
+      document.getElementById("pGenres").innerText = genres.join(", ");
+
+      document.getElementById("pReferral").innerText = document.getElementById("referral").value;
+      document.getElementById("pBio").innerText = document.getElementById("bio").value;
+
+      let photo = document.getElementById("photo").files[0];
+      document.getElementById("pPhoto").innerText = photo ? photo.name : "No file uploaded";
+
+      document.getElementById("preview").style.display = "block";
+    }
   </script>
 </body>
 </html>
