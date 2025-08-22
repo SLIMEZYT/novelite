@@ -5,238 +5,266 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>About Us | Novelite</title>
   <style>
-    /* ===== RESET ===== */
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: 'Segoe UI', sans-serif; line-height: 1.6; background: #fff; color: #222; }
-
-    /* ===== COLORS ===== */
-    :root {
-      --green: #014421;
-      --gold: #d4af37;
-      --white: #ffffff;
+    /* === Global Reset === */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
     }
 
-    /* ===== HEADER ===== */
-    header {
-      background: var(--green);
-      color: var(--white);
-      padding: 2rem;
-      text-align: center;
+    body {
+      font-family: "Segoe UI", sans-serif;
+      background: #ffffff;
+      color: #333;
+      line-height: 1.7;
+    }
+
+    /* === Navigation (saved style) === */
+    nav {
+      background: #004225; /* Royal green */
+      color: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
       position: sticky;
       top: 0;
       z-index: 1000;
     }
-    header h1 {
-      font-size: 2.5rem;
-      color: var(--gold);
+
+    nav h1 {
+      color: gold;
+      font-size: 1.8rem;
+      font-weight: bold;
     }
 
-    /* ===== SECTION ===== */
-    section {
-      padding: 4rem 10%;
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 1.5rem;
     }
-    section h2 {
-      font-size: 2rem;
-      margin-bottom: 1rem;
-      color: var(--green);
-      position: relative;
+
+    nav ul li a {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s;
     }
-    section h2::after {
-      content: "";
-      display: block;
-      width: 60px;
-      height: 4px;
-      background: var(--gold);
-      margin-top: 8px;
+
+    nav ul li a:hover {
+      color: gold;
     }
-    p {
-      margin-bottom: 1.5rem;
+
+    /* === Header Section === */
+    .header {
+      background: linear-gradient(rgba(0, 66, 37, 0.85), rgba(0, 66, 37, 0.85)), url("https://images.unsplash.com/photo-1524995997946-a1c2e315a42f") no-repeat center/cover;
+      color: white;
+      text-align: center;
+      padding: 5rem 2rem;
+    }
+
+    .header h2 {
+      font-size: 2.8rem;
+      color: gold;
+    }
+
+    .header p {
+      max-width: 700px;
+      margin: 1rem auto;
       font-size: 1.1rem;
     }
 
-    /* ===== TEAM GRID ===== */
-    .team {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 2rem;
-      margin-top: 2rem;
+    /* === Content Sections === */
+    section {
+      padding: 4rem 2rem;
+      max-width: 1100px;
+      margin: auto;
     }
-    .team-member {
-      background: var(--white);
-      border: 2px solid var(--green);
-      border-radius: 12px;
-      padding: 1.5rem;
-      text-align: center;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-      transition: transform 0.3s;
-      opacity: 0; /* for animation */
-    }
-    .team-member:hover {
-      transform: translateY(-8px);
-    }
-    .team-member img {
-      width: 100px;
-      height: 100px;
-      border-radius: 50%;
-      object-fit: cover;
+
+    section h3 {
+      color: #004225;
       margin-bottom: 1rem;
-      border: 3px solid var(--gold);
+      font-size: 2rem;
     }
-    .team-member h3 {
-      color: var(--green);
+
+    section p {
+      margin-bottom: 1rem;
+    }
+
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .feature-card {
+      background: #f9f9f9;
+      padding: 1.5rem;
+      border-radius: 10px;
+      box-shadow: 0px 4px 10px rgba(0,0,0,0.1);
+      transition: transform 0.3s;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .feature-card h4 {
+      color: gold;
       margin-bottom: 0.5rem;
     }
-    .team-member p {
-      font-size: 0.9rem;
-      color: #555;
+
+    /* === FAQ Section === */
+    .faq-item {
+      margin-bottom: 1rem;
+      border-bottom: 1px solid #ddd;
+      padding-bottom: 1rem;
+      cursor: pointer;
     }
 
-    /* ===== STATS ===== */
-    .stats {
+    .faq-item h4 {
       display: flex;
-      justify-content: center;
-      gap: 3rem;
-      margin-top: 3rem;
-    }
-    .stat {
-      text-align: center;
-      opacity: 0; /* for animation */
-    }
-    .stat h3 {
-      font-size: 2rem;
-      color: var(--gold);
-    }
-    .stat p {
-      font-size: 1rem;
-      color: var(--green);
+      justify-content: space-between;
+      font-size: 1.2rem;
+      color: #004225;
     }
 
-    /* ===== FOOTER ===== */
+    .faq-item p {
+      display: none;
+      margin-top: 0.5rem;
+      color: #444;
+    }
+
+    /* === Contact Section === */
+    .contact {
+      background: #004225;
+      color: white;
+      text-align: center;
+      border-radius: 10px;
+      padding: 3rem 2rem;
+    }
+
+    .contact h3 {
+      color: gold;
+    }
+
+    /* === Footer === */
     footer {
-      background: var(--green);
-      color: var(--white);
       text-align: center;
       padding: 1.5rem;
-      margin-top: 4rem;
-    }
-
-    /* ===== ANIMATIONS ===== */
-    .fade-in {
-      opacity: 1 !important;
-      transform: translateY(0) !important;
-      transition: all 1s ease;
-    }
-    .team-member, .stat {
-      transform: translateY(30px);
+      background: #002d17;
+      color: white;
     }
   </style>
 </head>
 <body>
-  <!-- HEADER -->
-  <header>
-    <h1>About Novelite</h1>
-    <p>Shaping Minds, Inspiring Futures</p>
-  </header>
+  <!-- === Navigation === -->
+  <nav>
+    <h1>Novelite</h1>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="about.html" style="color: gold;">About</a></li>
+      <li><a href="#features">Features</a></li>
+      <li><a href="#faq">FAQ</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
 
-  <!-- ABOUT SECTION -->
+  <!-- === Header === -->
+  <div class="header">
+    <h2>About Novelite</h2>
+    <p>Discover how Novelite transforms the way you explore, read, and interact with digital stories.</p>
+  </div>
+
+  <!-- === About Section === -->
   <section>
-    <h2>Who We Are</h2>
-    <p>
-      Novelite is dedicated to empowering learners with the knowledge and skills they need to thrive in a changing world.  
-      Through innovation, creativity, and excellence, we provide educational resources that inspire curiosity and growth.  
-    </p>
-    <p>
-      Our mission is to bridge gaps in learning while maintaining high academic and professional standards.  
-      We believe in a future where knowledge is accessible to all.
-    </p>
+    <h3>Who We Are</h3>
+    <p>Novelite is a creative digital platform built to redefine how readers connect with novels. 
+       Whether you're a passionate storyteller or an avid reader, Novelite provides an engaging 
+       environment to publish, share, and enjoy stories in a modern way.</p>
+    <p>Our mission is to make literature more accessible, interactive, and enjoyable while supporting 
+       writers and building a community of readers worldwide.</p>
   </section>
 
-  <!-- TEAM SECTION -->
+  <!-- === How It Works Section === -->
   <section>
-    <h2>Meet Our Team</h2>
-    <div class="team">
-      <div class="team-member">
-        <img src="https://via.placeholder.com/100" alt="Team member">
-        <h3>John Doe</h3>
-        <p>Founder & Visionary</p>
+    <h3>How It Works</h3>
+    <p>Using Novelite is simple:</p>
+    <ol>
+      <li><strong>Sign Up:</strong> Create your free account.</li>
+      <li><strong>Explore:</strong> Browse novels from different genres.</li>
+      <li><strong>Read & Engage:</strong> Bookmark, comment, and interact with stories you love.</li>
+      <li><strong>Publish:</strong> Writers can publish their novels and reach new readers.</li>
+    </ol>
+  </section>
+
+  <!-- === Features Section === -->
+  <section id="features">
+    <h3>Key Features</h3>
+    <div class="features">
+      <div class="feature-card">
+        <h4>📚 Huge Library</h4>
+        <p>Access novels across all genres – from romance to sci-fi, thrillers, and fantasy.</p>
       </div>
-      <div class="team-member">
-        <img src="https://via.placeholder.com/100" alt="Team member">
-        <h3>Jane Smith</h3>
-        <p>Creative Director</p>
+      <div class="feature-card">
+        <h4>✨ Interactive Reading</h4>
+        <p>Comment, bookmark, and share your favorite stories with friends.</p>
       </div>
-      <div class="team-member">
-        <img src="https://via.placeholder.com/100" alt="Team member">
-        <h3>Michael Lee</h3>
-        <p>Lead Developer</p>
+      <div class="feature-card">
+        <h4>🖊️ Writer Friendly</h4>
+        <p>Writers can publish, track their work, and grow their readership easily.</p>
+      </div>
+      <div class="feature-card">
+        <h4>🌍 Global Community</h4>
+        <p>Connect with readers and authors from around the world.</p>
       </div>
     </div>
   </section>
 
-  <!-- STATS SECTION -->
-  <section>
-    <h2>Our Impact</h2>
-    <div class="stats">
-      <div class="stat">
-        <h3 data-count="15">0</h3>
-        <p>Years of Excellence</p>
-      </div>
-      <div class="stat">
-        <h3 data-count="120">0</h3>
-        <p>Projects Completed</p>
-      </div>
-      <div class="stat">
-        <h3 data-count="5000">0</h3>
-        <p>Students Reached</p>
-      </div>
+  <!-- === FAQ Section === -->
+  <section id="faq">
+    <h3>Frequently Asked Questions</h3>
+    <div class="faq-item">
+      <h4>Is Novelite free? <span>+</span></h4>
+      <p>Yes! Novelite is free to use. Some premium features may be introduced in the future.</p>
+    </div>
+    <div class="faq-item">
+      <h4>Can I publish my own stories? <span>+</span></h4>
+      <p>Absolutely. Novelite gives writers the tools to share their creativity with the world.</p>
+    </div>
+    <div class="faq-item">
+      <h4>Do I need an account to read? <span>+</span></h4>
+      <p>You can browse freely, but an account allows you to bookmark, comment, and interact fully.</p>
     </div>
   </section>
 
-  <!-- FOOTER -->
+  <!-- === Contact Section === -->
+  <section id="contact" class="contact">
+    <h3>Contact Us</h3>
+    <p>Have questions or feedback? Reach us at:</p>
+    <p>Email: <a href="mailto:support@novelite.com" style="color: gold;">support@novelite.com</a></p>
+    <p>Phone: +234 800 000 0000</p>
+  </section>
+
+  <!-- === Footer === -->
   <footer>
     <p>&copy; 2025 Novelite. All Rights Reserved.</p>
   </footer>
 
-  <!-- JAVASCRIPT EFFECTS -->
   <script>
-    // Fade-in effect on scroll
-    const faders = document.querySelectorAll('.team-member, .stat');
-    const observer = new IntersectionObserver((entries, observer) => {
-      entries.forEach(entry => {
-        if(entry.isIntersecting){
-          entry.target.classList.add('fade-in');
-          observer.unobserve(entry.target);
+    // FAQ Toggle
+    document.querySelectorAll('.faq-item').forEach(item => {
+      item.addEventListener('click', () => {
+        let p = item.querySelector('p');
+        let sign = item.querySelector('span');
+        if (p.style.display === "block") {
+          p.style.display = "none";
+          sign.textContent = "+";
+        } else {
+          p.style.display = "block";
+          sign.textContent = "-";
         }
       });
-    }, { threshold: 0.2 });
-
-    faders.forEach(fader => observer.observe(fader));
-
-    // Counter animation
-    const counters = document.querySelectorAll('.stat h3');
-    counters.forEach(counter => {
-      const updateCount = () => {
-        const target = +counter.getAttribute('data-count');
-        const current = +counter.innerText;
-        const increment = Math.ceil(target / 100);
-
-        if(current < target){
-          counter.innerText = current + increment;
-          setTimeout(updateCount, 40);
-        } else {
-          counter.innerText = target.toLocaleString();
-        }
-      };
-
-      // Trigger when in view
-      const statObserver = new IntersectionObserver((entries, obs) => {
-        if(entries[0].isIntersecting){
-          updateCount();
-          obs.unobserve(counter);
-        }
-      }, { threshold: 1 });
-      
-      statObserver.observe(counter);
     });
   </script>
 </body>
