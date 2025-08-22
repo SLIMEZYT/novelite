@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About Us | Novelite</title>
+  <style>
+    /* ===== RESET ===== */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', sans-serif; line-height: 1.6; background: #fff; color: #222; }
+
+    /* ===== COLORS ===== */
+    :root {
+      --green: #014421;
+      --gold: #d4af37;
+      --white: #ffffff;
+    }
+
+    /* ===== HEADER ===== */
+    header {
+      background: var(--green);
+      color: var(--white);
+      padding: 2rem;
+      text-align: center;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+    header h1 {
+      font-size: 2.5rem;
+      color: var(--gold);
+    }
+
+    /* ===== SECTION ===== */
+    section {
+      padding: 4rem 10%;
+    }
+    section h2 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      color: var(--green);
+      position: relative;
+    }
+    section h2::after {
+      content: "";
+      display: block;
+      width: 60px;
+      height: 4px;
+      background: var(--gold);
+      margin-top: 8px;
+    }
+    p {
+      margin-bottom: 1.5rem;
+      font-size: 1.1rem;
+    }
+
+    /* ===== TEAM GRID ===== */
+    .team {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 2rem;
+      margin-top: 2rem;
+    }
+    .team-member {
+      background: var(--white);
+      border: 2px solid var(--green);
+      border-radius: 12px;
+      padding: 1.5rem;
+      text-align: center;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      transition: transform 0.3s;
+      opacity: 0; /* for animation */
+    }
+    .team-member:hover {
+      transform: translateY(-8px);
+    }
+    .team-member img {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-bottom: 1rem;
+      border: 3px solid var(--gold);
+    }
+    .team-member h3 {
+      color: var(--green);
+      margin-bottom: 0.5rem;
+    }
+    .team-member p {
+      font-size: 0.9rem;
+      color: #555;
+    }
+
+    /* ===== STATS ===== */
+    .stats {
+      display: flex;
+      justify-content: center;
+      gap: 3rem;
+      margin-top: 3rem;
+    }
+    .stat {
+      text-align: center;
+      opacity: 0; /* for animation */
+    }
+    .stat h3 {
+      font-size: 2rem;
+      color: var(--gold);
+    }
+    .stat p {
+      font-size: 1rem;
+      color: var(--green);
+    }
+
+    /* ===== FOOTER ===== */
+    footer {
+      background: var(--green);
+      color: var(--white);
+      text-align: center;
+      padding: 1.5rem;
+      margin-top: 4rem;
+    }
+
+    /* ===== ANIMATIONS ===== */
+    .fade-in {
+      opacity: 1 !important;
+      transform: translateY(0) !important;
+      transition: all 1s ease;
+    }
+    .team-member, .stat {
+      transform: translateY(30px);
+    }
+  </style>
+</head>
+<body>
+  <!-- HEADER -->
+  <header>
+    <h1>About Novelite</h1>
+    <p>Shaping Minds, Inspiring Futures</p>
+  </header>
+
+  <!-- ABOUT SECTION -->
+  <section>
+    <h2>Who We Are</h2>
+    <p>
+      Novelite is dedicated to empowering learners with the knowledge and skills they need to thrive in a changing world.  
+      Through innovation, creativity, and excellence, we provide educational resources that inspire curiosity and growth.  
+    </p>
+    <p>
+      Our mission is to bridge gaps in learning while maintaining high academic and professional standards.  
+      We believe in a future where knowledge is accessible to all.
+    </p>
+  </section>
+
+  <!-- TEAM SECTION -->
+  <section>
+    <h2>Meet Our Team</h2>
+    <div class="team">
+      <div class="team-member">
+        <img src="https://via.placeholder.com/100" alt="Team member">
+        <h3>John Doe</h3>
+        <p>Founder & Visionary</p>
+      </div>
+      <div class="team-member">
+        <img src="https://via.placeholder.com/100" alt="Team member">
+        <h3>Jane Smith</h3>
+        <p>Creative Director</p>
+      </div>
+      <div class="team-member">
+        <img src="https://via.placeholder.com/100" alt="Team member">
+        <h3>Michael Lee</h3>
+        <p>Lead Developer</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS SECTION -->
+  <section>
+    <h2>Our Impact</h2>
+    <div class="stats">
+      <div class="stat">
+        <h3 data-count="15">0</h3>
+        <p>Years of Excellence</p>
+      </div>
+      <div class="stat">
+        <h3 data-count="120">0</h3>
+        <p>Projects Completed</p>
+      </div>
+      <div class="stat">
+        <h3 data-count="5000">0</h3>
+        <p>Students Reached</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>&copy; 2025 Novelite. All Rights Reserved.</p>
+  </footer>
+
+  <!-- JAVASCRIPT EFFECTS -->
+  <script>
+    // Fade-in effect on scroll
+    const faders = document.querySelectorAll('.team-member, .stat');
+    const observer = new IntersectionObserver((entries, observer) => {
+      entries.forEach(entry => {
+        if(entry.isIntersecting){
+          entry.target.classList.add('fade-in');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.2 });
+
+    faders.forEach(fader => observer.observe(fader));
+
+    // Counter animation
+    const counters = document.querySelectorAll('.stat h3');
+    counters.forEach(counter => {
+      const updateCount = () => {
+        const target = +counter.getAttribute('data-count');
+        const current = +counter.innerText;
+        const increment = Math.ceil(target / 100);
+
+        if(current < target){
+          counter.innerText = current + increment;
+          setTimeout(updateCount, 40);
+        } else {
+          counter.innerText = target.toLocaleString();
+        }
+      };
+
+      // Trigger when in view
+      const statObserver = new IntersectionObserver((entries, obs) => {
+        if(entries[0].isIntersecting){
+          updateCount();
+          obs.unobserve(counter);
+        }
+      }, { threshold: 1 });
+      
+      statObserver.observe(counter);
+    });
+  </script>
+</body>
+</html>
