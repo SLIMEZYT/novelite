@@ -7,8 +7,11 @@
 <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
 <style>
 :root {
-    --royal-green:#006400; --gold:#FFD700; --white:#fff;
+    --royal-green:#006400; 
+    --gold:#FFD700; 
+    --white:#fff;
 }
+
 /* Body & Hero */
 body {margin:0;padding:0;font-family:Arial,sans-serif;background:#f8f8f8;color:#000;}
 .hero {background:linear-gradient(135deg,var(--royal-green),var(--gold)); color:var(--white); text-align:center; padding:4rem 1rem;}
@@ -16,11 +19,13 @@ body {margin:0;padding:0;font-family:Arial,sans-serif;background:#f8f8f8;color:#
 .hero p{font-size:1.2rem;margin-bottom:2rem;}
 .hero button{background:var(--white);color:var(--royal-green);border:none;padding:.8rem 2rem;border-radius:25px;font-size:1rem;cursor:pointer;font-weight:bold;transition:.3s;}
 .hero button:hover{background:rgba(255,255,255,.8);}
+
 /* Sections */
 section{padding:2rem 1rem; opacity:0; transform:translateY(20px); transition:all .6s ease;}
 section.visible{opacity:1; transform:translateY(0);}
 .section-title{font-size:1.5rem;font-weight:bold;color:var(--royal-green);margin-bottom:1rem;}
 .books-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(180px,1fr)); gap:1rem;}
+
 /* Book card */
 .book-card{background:var(--white);border-radius:16px;box-shadow:0 5px 20px rgba(0,0,0,0.1);text-align:center;cursor:pointer;padding:.5rem;position:relative;transition:.3s;}
 .book-card:hover{transform:translateY(-5px) scale(1.03);box-shadow:0 15px 25px rgba(0,0,0,0.2);}
@@ -28,15 +33,23 @@ section.visible{opacity:1; transform:translateY(0);}
 .book-card h3{margin:.3rem 0;font-size:1rem;color:var(--royal-green);}
 .book-card p{margin:.2rem 0;font-size:.85rem;height:2.5em;overflow:hidden;}
 .book-card .author{font-size:.75rem;color:#555;margin-bottom:.3rem;}
+.fav-btn{position:absolute;top:8px;right:8px;font-size:20px;cursor:pointer;color:#ccc;transition:.2s;}
+.fav-btn.active{color:var(--gold);}
+.progress-container{height:6px;background:#eee;border-radius:3px;margin-top:4px;}
+.progress-bar{height:100%;background:var(--gold);border-radius:3px;width:0%;}
+
+/* PDF button */
 .pdf-btn{display:inline-block;margin-top:4px;padding:.3rem .6rem;font-size:.75rem;background:var(--royal-green);color:var(--white);border-radius:6px;text-decoration:none;transition:.3s;}
 .pdf-btn:hover{background:var(--gold); color:var(--royal-green);}
+
 /* Modal */
 #bookModal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.6);justify-content:center;align-items:center;z-index:10000;}
 .modal-content{background:var(--white);padding:1rem;border-radius:12px;width:90%;max-width:400px;text-align:center;}
 .modal-content img{width:100%;border-radius:12px;margin-bottom:.5rem;}
 .modal-content h3{color:var(--royal-green);margin:.5rem 0;}
 .modal-content button{padding:.5rem 1rem;background:var(--gold);color:var(--white);border:none;border-radius:6px;cursor:pointer;margin-top:.5rem;}
-/* Bottom Nav */
+
+/* ============ BOTTOM LIQUID GLASS NAV ============ */
 .bottom-nav{
   position:fixed; left:50%; bottom:18px; transform:translateX(-50%);
   width: min(560px, 92%); display:flex; justify-content:space-between; align-items:center; gap:8px;
@@ -47,6 +60,7 @@ section.visible{opacity:1; transform:translateY(0);}
   z-index:9000; animation: floatbar 4s ease-in-out infinite;
 }
 @keyframes floatbar{50%{transform:translateX(-50%) translateY(-3px)}}
+
 .nav-btn{
   flex:1; display:flex; flex-direction:column; align-items:center; gap:6px;
   padding:8px 6px; border-radius:14px; cursor:pointer; user-select:none;
@@ -61,24 +75,35 @@ section.visible{opacity:1; transform:translateY(0);}
   content:""; position:absolute; width:8px; height:8px; background:rgba(255,215,0,.6); border-radius:50%;
   transform:scale(0); opacity:0; pointer-events:none;
 }
-.nav-btn:active:after{animation:ripple 0.6s linear forwards;}
-@keyframes ripple{0%{transform:scale(0); opacity:0.6;} 100%{transform:scale(15); opacity:0;}}
-@media(max-width:500px){.books-grid{grid-template-columns:repeat(auto-fill,minmax(140px,1fr));} .hero h1{font-size:2rem;} .hero p{font-size:1rem;}}
+.nav-btn:active:after{
+  animation:ripple 0.6s linear forwards;
+}
+
+/* Responsive */
+@media(max-width:500px){
+  .books-grid{grid-template-columns:repeat(auto-fill,minmax(140px,1fr));} 
+  .hero h1{font-size:2rem;} 
+  .hero p{font-size:1rem;}
+}
 </style>
 </head>
 <body>
 
+<!-- Hero -->
 <div class="hero">
     <h1>Discover Your Next Read</h1>
     <p>Explore, Favourite, and Download Novels</p>
     <button onclick="scrollToSection('featured')">Browse Books</button>
 </div>
 
-<section id="featured"><h2 class="section-title">Featured Books</h2><div id="featured-container" class="books-grid"></div></section>
-<section id="newArrivals"><h2 class="section-title">New Arrivals</h2><div id="new-container" class="books-grid"></div></section>
-<section id="recommended"><h2 class="section-title">Recommended</h2><div id="rec-container" class="books-grid"></div></section>
-<section id="continue"><h2 class="section-title">Continue Reading</h2><div id="continue-container" class="books-grid"></div></section>
+<!-- Sections -->
+<section id="featured"><h2 class="section-title">Featured Books</h2><div id="featured-container" class="books-grid"><p>Loading...</p></div></section>
+<section id="newArrivals"><h2 class="section-title">New Arrivals</h2><div id="new-container" class="books-grid"><p>Loading...</p></div></section>
+<section id="recommended"><h2 class="section-title">Recommended</h2><div id="rec-container" class="books-grid"><p>Loading...</p></div></section>
+<section id="continue"><h2 class="section-title">Continue Reading</h2><div id="continue-container" class="books-grid"><p>Loading...</p></div></section>
+<section id="wishlist"><h2 class="section-title">Wishlist</h2><div id="wishlist-container" class="books-grid"><p>Loading...</p></div></section>
 
+<!-- Modal -->
 <div id="bookModal">
     <div class="modal-content">
         <img id="modalCover" src="" alt="Book Cover">
@@ -86,10 +111,12 @@ section.visible{opacity:1; transform:translateY(0);}
         <p id="modalDesc"></p>
         <p class="author" id="modalAuthor"></p>
         <a id="pdfBtn" class="pdf-btn" href="#" target="_blank" style="display:none;">Download PDF</a>
+        <button id="favBtn">Add to Favourites</button>
         <button onclick="closeModal()">Close</button>
     </div>
 </div>
 
+<!-- Bottom Nav -->
 <nav class="bottom-nav">
     <a href="home.html" class="nav-btn"><span class="ico">🏠</span><span>Home</span></a>
     <a href="books.html" class="nav-btn"><span class="ico">📚</span><span>Books</span></a>
@@ -98,45 +125,76 @@ section.visible{opacity:1; transform:translateY(0);}
     <a href="home.html" class="nav-btn"><span class="ico">👤</span><span>Profile</span></a>
 </nav>
 
+<!-- Supabase SDK -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.56.0/dist/umd/supabase.min.js"></script>
 <script>
+  // ✅ Supabase Initialization
   const supabaseUrl = 'https://uadanawuwoaznvyqpfmz.supabase.co';
   const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVhZGFuYXd1d29hem52eXFwZm16Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDkxMjM1MTUsImV4cCI6MjA2NDY5OTUxNX0.1fxx3005ziiMiy9CuMNzwIolEBBvknVMQgytRD4MHhQ';
   const supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
+  // Scroll helper
   function scrollToSection(id){document.getElementById(id).scrollIntoView({behavior:'smooth'});}
   function setActiveNav(){
     const navLinks = document.querySelectorAll('.bottom-nav .nav-btn');
     const currentPath = window.location.pathname.split("/").pop();
-    navLinks.forEach(link=> link.getAttribute('href') === currentPath ? link.classList.add('active') : link.classList.remove('active'));
+    navLinks.forEach(link=>{
+        if(link.getAttribute('href') === currentPath) link.classList.add('active');
+        else link.classList.remove('active');
+    });
   }
+
   document.addEventListener('DOMContentLoaded',()=>{setActiveNav(); fetchBooks(); window.addEventListener('scroll', checkSections);});
+
+  // Fade-in sections
   const sections = document.querySelectorAll('section');
-  function checkSections(){const trigger = window.innerHeight * 0.85; sections.forEach(sec=>{if(sec.getBoundingClientRect().top<trigger) sec.classList.add('visible');});}
+  function checkSections(){
+    const trigger = window.innerHeight * 0.85;
+    sections.forEach(sec=>{if(sec.getBoundingClientRect().top<trigger) sec.classList.add('visible');});
+  }
+
+  // Modal
   const modal=document.getElementById('bookModal');
-  function openModal(book){modal.style.display='flex'; document.getElementById('modalCover').src=book.cover || 'https://via.placeholder.com/300x400'; document.getElementById('modalTitle').textContent=book.title; document.getElementById('modalDesc').textContent=book.desc; document.getElementById('modalAuthor').textContent=book.authorName; const pdfBtn=document.getElementById('pdfBtn'); if(book.pdf){pdfBtn.href=book.pdf; pdfBtn.style.display='inline-block';}else{pdfBtn.style.display='none';}}
+  function openModal(book){
+      modal.style.display='flex';
+      document.getElementById('modalCover').src=book.cover || 'https://via.placeholder.com/300x400';
+      document.getElementById('modalTitle').textContent = book.title;
+      document.getElementById('modalDesc').textContent = book.desc;
+      document.getElementById('modalAuthor').textContent = book.authorName;
+      const pdfBtn = document.getElementById('pdfBtn');
+      if(book.pdf){pdfBtn.href = book.pdf; pdfBtn.style.display='inline-block';}
+      else{pdfBtn.style.display='none';}
+  }
   function closeModal(){modal.style.display='none';}
 
+  // Fetch books from 'stories' table
   async function fetchBooks(){
     try{
-      const { data:booksData, error } = await supabase.from('stories').select('*');
-      if(error) {console.error(error); return;}
-      renderBooks('featured-container', booksData.filter(b=>b.featured));
-      renderBooks('new-container', booksData.slice(-6));
-      renderBooks('rec-container', booksData.filter(b=>b.recommended));
-      renderBooks('continue-container', booksData.filter(b=>b.progress>0));
+      const { data, error } = await supabase.from('stories').select('*');
+      if(error){ console.error(error); return; }
+
+      // Render all sections
+      renderBooks('featured-container', data.filter(b=>b.featured));
+      renderBooks('new-container', data.slice(-6));
+      renderBooks('rec-container', data.filter(b=>b.recommended));
+      renderBooks('continue-container', data.filter(b=>b.progress>0));
+      renderBooks('wishlist-container', []);
     }catch(err){console.error(err);}
   }
+
   function renderBooks(containerId, arr){
-    const container=document.getElementById(containerId); container.innerHTML='';
+    const container = document.getElementById(containerId);
+    container.innerHTML = '';
     if(arr.length===0){container.innerHTML='<p>No books available</p>'; return;}
     arr.forEach(book=>{
-      const card=document.createElement('div'); card.className='book-card';
-      card.innerHTML=`<img src="${book.cover || 'https://via.placeholder.com/180x240'}" alt="cover">
-        <h3>${book.title}</h3><p>${book.desc || ''}</p>
+      const card = document.createElement('div'); card.className='book-card';
+      card.innerHTML = `
+        <img src="${book.cover || 'https://via.placeholder.com/180x240'}" alt="cover">
+        <h3>${book.title}</h3>
+        <p>${book.desc || ''}</p>
         <p class="author">${book.authorName || ''}</p>
-        ${book.pdf?`<a href="${book.pdf}" class="pdf-btn" target="_blank">Download PDF</a>`:''}`;
-      card.onclick=()=>openModal(book);
+      `;
+      card.onclick = ()=>openModal(book);
       container.appendChild(card);
     });
   }
