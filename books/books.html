@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Novelite Books</title>
+<!-- Quill CSS -->
+<link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+<style>
+:root {
+    --royal-green: #006400;
+    --gold: #FFD700;
+    --white: #FFFFFF;
+    --glass: rgba(255,255,255,0.1);
+    --glass-bd: rgba(255,255,255,0.3);
+}
+
+body {
+    font-family: Arial, sans-serif;
+    margin:0;
+    padding:0;
+    background:#f8f8f8;
+    color:#000;
+}
+
+header {
+    background: var(--royal-green);
+    color: var(--white);
+    padding: 1rem;
+    text-align:center;
+}
+
+.top-nav {
+    display:flex;
+    justify-content:space-around;
+    background: var(--royal-green);
+    padding:0.5rem 0;
+}
+
+.top-nav button {
+    background:none;
+    border:none;
+    color: var(--white);
+    font-weight:bold;
+    cursor:pointer;
+    transition:.2s;
+}
+.top-nav button:hover {
+    color: var(--gold);
+    text-decoration:underline;
+}
+
+main {padding:1rem;}
+.book-section {margin-bottom:100px;}
+.hidden {display:none;}
+.books-grid {
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(150px, 1fr));
+    gap:1rem;
+}
+.books-grid p {color:#666;}
+
+.book-card {
+    background: var(--white);
+    border-radius:8px;
+    box-shadow:0 2px 5px rgba(0,0,0,0.1);
+    text-align:center;
+    cursor:pointer;
+    transition:.2s;
+}
+.book-card:hover {
+    transform:translateY(-3px);
+    box-shadow:0 5px 15px rgba(0,0,0,0.2);
+}
+.book-card img {width:100%; height:auto; border-radius:4px;}
+.book-card h3 {margin:0.5rem 0 0.2rem 0; color: var(--royal-green);}
+.book-card p {margin:0.2rem 0; font-size:0.9rem;}
+
+/* Form styling */
+form label {display:block; margin:0.5rem 0;}
+form input, form textarea {width:100%; padding:0.5rem; margin-top:0.2rem; border-radius:4px; border:1px solid #ccc;}
+form button {margin-top:0.5rem; padding:0.5rem 1rem; background: var(--gold); color: var(--royal-green); border:none; border-radius:4px; cursor:pointer;}
+.price-field {display:none;}
+.ql-container {height:150px; margin-bottom:0.5rem;}
+
+/* Modal */
+#bookModal {
+    display:none;
+    position:fixed;
+    top:0; left:0;
+    width:100%; height:100%;
+    background:rgba(0,0,0,0.6);
+    justify-content:center;
+    align-items:center;
+    z-index:10000;
+}
+.modal-content {
+    background: var(--white);
+    padding:1rem;
+    border-radius:8px;
+    width:90%;
+    max-width:400px;
+    text-align:center;
+}
+.modal-content img {width:100%; border-radius:4px; margin-bottom:0.5rem;}
+.modal-content h3 {color: var(--royal-green);}
+.modal-content button {
+    margin-top:0.5rem;
+    padding:0.5rem 1rem;
+    background: var(--gold);
+    color: var(--royal-green);
+    border:none;
+    border-radius:4px;
+    cursor:pointer;
+}
+
+/* Bottom Liquid Glass Nav */
+.bottom-nav{
+    position:fixed; left:50%; bottom:18px; transform:translateX(-50%);
+    width:min(560px,92%); display:flex; justify-content:space-between; align-items:center; gap:8px;
+    padding:10px 12px; border-radius:22px;
+    background: var(--glass); backdrop-filter: blur(12px) saturate(150%);
+    border:1px solid var(--glass-bd);
+    box-shadow:0 10px 30px rgba(0,0,0,.15);
+    z-index:9000; animation: floatbar 4s ease-in-out infinite;
+}
+@keyframes floatbar{50%{transform:translateX(-50%) translateY(-3px)}}
+.nav-btn{
+    flex:1; display:flex; flex-direction:column; align-items:center; gap:6px;
+    padding:8px 6px; border-radius:14px; cursor:pointer; user-select:none;
+    color:#0f0f0f; text-decoration:none; font-size:12px; font-weight:600;
+    transition:.2s; position:relative; overflow:hidden;
+}
+.nav-btn .ico{font-size:18px}
+.nav-btn:hover{background:rgba(255,255,255,.25);}
+.nav-btn.active{background:rgba(255,215,0,.25); border:1px solid var(--glass-bd);}
+.nav-btn.active .ico, .nav-btn.active span{color:var(--green);}
+.nav-btn:after{
+    content:""; position:absolute; width:8px; height:8px; background:rgba(255,215,0,.6); border-radius:50%;
+    transform:scale(0); opacity:0; pointer-events:none;
+}
+
+/* Ripple effect */
+.nav-btn:active:after{
+    transform:scale(3);
+    opacity:.5;
+    transition:transform .3s, opacity .5s;
+}
+</style>
+</head>
+<body>
+<header>Novelite Books</header>
+
+<!-- Top Nav -->
+<nav class="top-nav">
+    <button id="availableBtn">Available Books</button>
+    <button id="wishlistBtn">Wishlist</button>
+    <button id="continueBtn">Continue Reading</button>
+</nav>
+
+<main>
+    <!-- Available Books -->
+    <section id="availableSection" class="book-section">
+        <h2>Available Books</h2>
+        <div id="books-container" class="books-grid">
+            <p>No books available yet.</p>
+        </div>
+    </section>
+
+    <!-- Wishlist -->
+    <section id="wishlistSection" class="book-section hidden">
+        <h2>Your Wishlist</h2>
+        <div id="wishlist-container" class="books-grid">
+            <p>No saved books in your wishlist.</p>
+        </div>
+    </section>
+
+    <!-- Continue Reading -->
+    <section id="continueSection" class="book-section hidden">
+        <h2>Continue Reading</h2>
+        <div id="continue-container" class="books-grid">
+            <p>You haven't started any books yet.</p>
+        </div>
+    </section>
+
+    <!-- Add/Edit Book Form (Authors Only) -->
+    <section id="addBookSection" class="book-section hidden">
+        <h2>Add/Edit Book</h2>
+        <form id="bookForm">
+            <label>Title: <input type="text" name="title" required></label>
+            <label>Description:</label>
+            <div id="editor-container"></div>
+            <label>Category: <input type="text" name="category"></label>
+            <label>Cover Image URL: <input type="text" name="cover"></label>
+            <label class="price-field">Price: <input type="text" name="price"></label>
+            <button type="submit">Save Book</button>
+        </form>
+    </section>
+</main>
+
+<!-- Modal -->
+<div id="bookModal">
+    <div class="modal-content">
+        <img id="modalCover" src="" alt="Book Cover">
+        <h3 id="modalTitle"></h3>
+        <p id="modalDesc"></p>
+        <button id="favBtn">Add to Favourites</button>
+        <button onclick="closeModal()">Close</button>
+    </div>
+</div>
+
+<!-- Bottom Nav -->
+<nav class="bottom-nav">
+    <div class="nav-btn"><span class="ico">🏠</span><span>Home</span></div>
+    <div class="nav-btn"><span class="ico">🔍</span><span>Search</span></div>
+    <div class="nav-btn"><span class="ico">📚</span><span>Library</span></div>
+    <div class="nav-btn"><span class="ico">👤</span><span>Profile</span></div>
+</nav>
+
+<!-- Quill JS -->
+<script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+<script>
+// === JS ===
+
+// Simulate user
+const user = {loggedIn:true, role:"author"};
+if(!user.loggedIn){
+    document.body.innerHTML = "<h2>Please log in to access Books page.</h2>";
+}
+
+// Quill editor
+var quill = new Quill('#editor-container', {theme:'snow'});
+
+// Sections toggle
+const availableBtn = document.getElementById('availableBtn');
+const wishlistBtn = document.getElementById('wishlistBtn');
+const continueBtn = document.getElementById('continueBtn');
+const sections = {
+    available: document.getElementById('availableSection'),
+    wishlist: document.getElementById('wishlistSection'),
+    continue: document.getElementById('continueSection')
+};
+availableBtn.addEventListener('click',()=>toggleSection('available'));
+wishlistBtn.addEventListener('click',()=>toggleSection('wishlist'));
+continueBtn.addEventListener('click',()=>toggleSection('continue'));
+function toggleSection(sec){
+    Object.keys(sections).forEach(k=>sections[k].classList.add('hidden'));
+    sections[sec].classList.remove('hidden');
+}
+
+// Sample books array
+let books = [
+    {title:"Book One",desc:"First book description",cover:"https://via.placeholder.com/150",id:1},
+    {title:"Book Two",desc:"Second book description",cover:"https://via.placeholder.com/150",id:2},
+];
+let wishlist = [];
+
+// Render Available Books
+function renderBooks(){
+    const container = document.getElementById('books-container');
+    container.innerHTML = '';
+    if(books.length===0){container.innerHTML='<p>No books available yet.</p>'; return;}
+    books.forEach(b=>{
+        const card = document.createElement('div');
+        card.className='book-card';
+        card.innerHTML=`<img src="${b.cover}"><h3>${b.title}</h3><p>${b.desc.substring(0,50)}...</p>`;
+        card.onclick=()=>openModal(b);
+        container.appendChild(card);
+    });
+}
+renderBooks();
+
+// Modal functions
+const modal = document.getElementById('bookModal');
+const modalTitle = document.getElementById('modalTitle');
+const modalDesc = document.getElementById('modalDesc');
+const modalCover = document.getElementById('modalCover');
+let currentBook=null;
+function openModal(book){
+    currentBook=book;
+    modalTitle.textContent=book.title;
+    modalDesc.textContent=book.desc;
+    modalCover.src=book.cover;
+    modal.style.display='flex';
+}
+function closeModal(){modal.style.display='none';}
+
+// Add to favourites
+document.getElementById('favBtn').addEventListener('click',()=>{
+    if(!wishlist.includes(currentBook)){
+        wishlist.push(currentBook);
+        renderWishlist();
+        alert("Book added to favourites!");
+    }
+});
+
+// Render Wishlist
+function renderWishlist(){
+    const container = document.getElementById('wishlist-container');
+    container.innerHTML='';
+    if(wishlist.length===0){container.innerHTML='<p>No saved books in your wishlist.</p>'; return;}
+    wishlist.forEach(b=>{
+        const card = document.createElement('div');
+        card.className='book-card';
+        card.innerHTML=`<img src="${b.cover}"><h3>${b.title}</h3><p>${b.desc.substring(0,50)}...</p>`;
+        container.appendChild(card);
+    });
+}
+
+// Add/Edit book form (authors only)
+if(user.role==='author'){
+    document.getElementById('addBookSection').classList.remove('hidden');
+    document.querySelector('.price-field').style.display='block';
+    const bookForm=document.getElementById('bookForm');
+    bookForm.addEventListener('submit',e=>{
+        e.preventDefault();
+        const newBook={
+            title:bookForm.title.value,
+            desc: quill.root.innerHTML,
+            cover:bookForm.cover.value,
+            id:Date.now()
+        };
+        books.push(newBook);
+        renderBooks();
+        bookForm.reset();
+        quill.setContents([]);
+        toggleSection('available');
+    });
+}
+</script>
+</body>
+</html>
