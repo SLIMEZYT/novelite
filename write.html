@@ -1,62 +1,69 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Novelite — Create Your Story</title>
-<meta name="description" content="Write and publish your stories on Novelite. Select genres, age groups, and preview your book instantly.">
-<meta name="keywords" content="Novelite, write stories, book creation, publish, genres, age groups">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Create Your Book | Novelite — Read. Write. Connect.</title>
+<meta name="description" content="Create and submit your book to Novelite. Share your story, choose genres, age groups, upload your PDF, and reach readers worldwide.">
+<meta name="keywords" content="Novelite, create book, submit book, writing platform, online books, genres, age groups">
 <meta name="author" content="Novelite">
+
 <style>
-  :root{
-    --green:#014421;
-    --gold:#FFD700;
-    --white:#FFFFFF;
-    --ink: rgba(1,68,33,.08);
-    --glass: rgba(255,255,255,.08);
-    --glass-bd: rgba(255,215,0,.25);
-  }
-  *{box-sizing:border-box;margin:0;padding:0}
-  body{font-family:"Inter", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; background: var(--white); color:#111; min-height:100vh; overflow-x:hidden;}
+:root{
+  --green:#014421; --gold:#FFD700; --white:#FFFFFF; --ink: rgba(1,68,33,.08); --glass: rgba(255,255,255,.08); --glass-bd: rgba(255,215,0,.25);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:"Inter", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; background:#fdfdfd;color:#111;min-height:100vh;overflow-x:hidden;}
+h1,h2,h3{color:var(--green);}
+h1{font-size:clamp(28px,5vw,42px);}
+.loader{position:fixed; inset:0; background:var(--white); display:flex; align-items:center; justify-content:center; z-index:9999;}
+.quill{width:72px;height:72px;position:relative; filter:drop-shadow(0 6px 18px rgba(0,0,0,.15));}
+.quill:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 70% 30%, var(--gold) 0 10px, transparent 11px),linear-gradient(135deg, var(--gold) 35%, #c9a200 36% 45%, var(--gold) 46%); clip-path: polygon(30% 0, 100% 0, 70% 70%, 55% 100%, 45% 70%, 0 40%); border-radius:8px; animation: float 1.8s ease-in-out infinite;}
+.ink-ring{position:absolute;width:120px;height:120px;border-radius:50%;border:4px solid var(--ink);animation: ripple 1.8s ease-out infinite;}
+@keyframes float{50%{transform: translateY(-6px) rotate(-2deg)}}
+@keyframes ripple{from{transform:scale(.7); opacity:1} to{transform:scale(1.2); opacity:0}}
 
-  /* ===== LOADER ===== */
-  .loader{position:fixed; inset:0; background:var(--white); display:flex; align-items:center; justify-content:center; z-index:9999;}
-  .quill{width:72px; height:72px; position:relative; filter: drop-shadow(0 6px 18px rgba(0,0,0,.15));}
-  .quill:before{content:""; position:absolute; inset:0; background:
-    radial-gradient(circle at 70% 30%, var(--gold) 0 10px, transparent 11px),
-    linear-gradient(135deg, var(--gold) 35%, #c9a200 36% 45%, var(--gold) 46%);
-    clip-path: polygon(30% 0, 100% 0, 70% 70%, 55% 100%, 45% 70%, 0 40%);
-    border-radius:8px; animation: float 1.8s ease-in-out infinite;
-  }
-  .ink-ring{position:absolute; width:120px; height:120px; border-radius:50%; border:4px solid var(--ink); animation: ripple 1.8s ease-out infinite;}
-  @keyframes float{50%{transform: translateY(-6px) rotate(-2deg)}}
-  @keyframes ripple{from{transform:scale(.7); opacity:1} to{transform:scale(1.2); opacity:0}}
+/* HERO SEO SECTION */
+.hero{position:relative; min-height:100vh; display:flex; align-items:center; justify-content:center; overflow:hidden; color:#fff; text-align:center; padding:0 20px;}
+.hero img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:-2; transition:opacity 1s ease;}
+.hero::after{content:"";position:absolute; inset:0; background: rgba(0,0,0,.35); z-index:-1;}
+.hero-content{max-width:720px; animation: fadeIn 1.5s ease forwards;}
+.hero-content h1{font-size:clamp(32px,6vw,52px); margin-bottom:16px;}
+.hero-content p{font-size:clamp(16px,2vw,20px); margin-bottom:24px; line-height:1.5;}
+.cta{background:var(--gold); color:var(--green); font-weight:700; padding:14px 28px; border-radius:28px; cursor:pointer; transition:.3s;}
+.cta:hover{transform:translateY(-3px); box-shadow:0 12px 24px rgba(0,0,0,.18);}
+@keyframes fadeIn{0%{opacity:0; transform:translateY(30px);}100%{opacity:1; transform:translateY(0);}}
 
-  /* ===== HEADER ===== */
-  header{padding:40px 22px; text-align:center; background: radial-gradient(1200px 400px at 50% -10%, rgba(1,68,33,.08), transparent 60%), linear-gradient(0deg, transparent, transparent 60%, rgba(1,68,33,.03));}
-  .brand{display:flex; align-items:center; justify-content:center; gap:10px; margin-bottom:14px;}
-  .brand .mark{width:28px; height:28px; border-radius:50%; background:var(--gold); box-shadow:0 6px 16px rgba(0,0,0,.15); position:relative;}
-  .brand .mark:after{content:""; position:absolute; inset:4px 6px 6px 10px; background:#c9a200; border-radius:6px; transform:skewX(-15deg);}
-  h1{font-size: clamp(28px, 5vw, 42px); line-height:1.15; color:var(--green);}
-  .tag{margin-top:10px; color:#333}
+/* FORM */
+.form-container{max-width:600px;margin:60px auto 120px auto;padding:28px;background:#fff;border-radius:16px;box-shadow:0 6px 28px rgba(0,0,0,.12);}
+.form-container h2{margin-bottom:16px; text-align:center;}
+.field{margin-bottom:16px; display:flex; flex-direction:column; gap:6px;}
+.field input, .field textarea{padding:12px 14px; border-radius:12px; border:1px solid #dcdcdc; outline:none; width:100%; font-size:14px;}
+.btn{padding:12px 18px; border-radius:12px; border:none; font-weight:600; cursor:pointer; transition:.25s; background:var(--green); color:var(--white);}
+.btn:hover{transform: translateY(-2px); box-shadow:0 8px 20px rgba(1,68,33,.18);}
 
-  /* ===== FORM ===== */
-  .form-container{padding:20px; max-width:700px; margin:20px auto; background:var(--glass); backdrop-filter: blur(12px) saturate(150%); border:1px solid var(--glass-bd); border-radius:16px;}
-  .form-container h2{color:var(--green); margin-bottom:12px; text-align:center;}
-  .field{margin-bottom:12px; display:flex; flex-direction:column;}
-  .field label{margin-bottom:4px; font-size:14px; color:#222;}
-  .field input, .field textarea, .field select{padding:10px 12px; border-radius:12px; border:1px solid #ccc; outline:none; font-size:14px;}
-  .checkbox-group{display:flex; flex-wrap:wrap; gap:8px;}
-  .checkbox-group label{display:flex; align-items:center; gap:4px; background:#fff; padding:4px 8px; border-radius:8px; border:1px solid #ccc; cursor:pointer;}
-  .btn{padding:12px 18px; border-radius:12px; border:none; font-weight:600; cursor:pointer; transition:.25s; background:var(--green); color:var(--white);}
-  .btn:hover{transform: translateY(-2px); box-shadow:0 8px 20px rgba(1,68,33,.18);}
-  .preview-cards{display:grid; grid-template-columns:repeat(auto-fit, minmax(200px,1fr)); gap:14px; margin-top:20px;}
-  .card{background:#fff; border-radius:16px; overflow:hidden; box-shadow:0 6px 14px rgba(0,0,0,.06); position:relative; padding:8px;}
-  .card .cover{aspect-ratio:3/4; background:#eee; margin-bottom:8px; border-radius:8px; background-size:cover; background-position:center;}
-  .card .title{font-weight:700; color:#222;}
-  .card .by{font-size:12px; color:#666; margin-top:4px;}
-  .chips{display:flex; flex-wrap:wrap; gap:4px; margin-top:6px;}
-  .chips span{background:var(--gold); padding:2px 6px; font-size:11px; border-radius:999px;}
+/* MULTI-SELECT */
+.multi-select{position:relative; background: rgba(255,255,255,.85); border-radius:12px; border:1px solid rgba(0,0,0,.1); padding:6px 12px; cursor:pointer; user-select:none;}
+.multi-select input{border:none; outline:none; width:100%; background:transparent; cursor:pointer; padding:6px 0;}
+.multi-select .tags-container{display:flex; flex-wrap:wrap; gap:6px; margin-bottom:4px;}
+.multi-select .tags-container .tag{background:#FFD700;color:#014421;padding:4px 8px;border-radius:12px;font-size:12px;display:flex;align-items:center;gap:4px;}
+.multi-select .tags-container .tag span.remove{cursor:pointer;font-weight:bold;}
+.multi-select .options-list{position:absolute; top:100%; left:0; right:0; background:#fff; border:1px solid rgba(0,0,0,.15); border-radius:12px; max-height:160px; overflow-y:auto; display:none; z-index:5; margin-top:4px;}
+.multi-select .options-list li{padding:8px 12px; cursor:pointer;}
+.multi-select .options-list li:hover{background: rgba(1,68,33,.05);}
+
+/* BOTTOM NAV */
+.bottom-nav{position:fixed; left:50%; bottom:18px; transform:translateX(-50%); width:min(560px,92%); display:flex; justify-content:space-between; align-items:center; gap:8px; padding:10px 12px; border-radius:22px; background: var(--glass); backdrop-filter: blur(12px) saturate(150%); border:1px solid var(--glass-bd); box-shadow: 0 10px 30px rgba(0,0,0,.15); z-index:9000;}
+.nav-btn{flex:1; display:flex; flex-direction:column; align-items:center; gap:6px; padding:8px 6px; border-radius:14px; cursor:pointer; user-select:none; color:#0f0f0f; text-decoration:none; font-size:12px; font-weight:600; transition:.2s; position:relative; overflow:hidden;}
+.nav-btn .ico{font-size:18px;}
+.nav-btn:hover{background:rgba(255,255,255,.25);}
+.nav-btn.active{background:rgba(255,215,0,.25); border:1px solid var(--glass-bd);}
+.nav-btn.active .ico, .nav-btn.active span{color:var(--green);}
+
+@media(max-width:640px){
+  .form-container{margin:50px 16px 100px 16px; padding:20px;}
+  .bottom-nav{width:95%;}
+}
 </style>
 </head>
 <body>
@@ -67,132 +74,167 @@
   <div class="quill"></div>
 </div>
 
-<!-- HEADER -->
-<header>
-  <div class="brand">
-    <div class="mark" aria-hidden="true"></div>
-    <strong style="letter-spacing:.5px;color:#222;font-size:14px">NOVELITE</strong>
+<!-- HERO SEO SECTION -->
+<section class="hero" id="hero">
+  <img id="heroImg" src="https://source.unsplash.com/1600x900/?books,library" alt="Books">
+  <div class="hero-content">
+    <h1 id="heroTitle">Welcome to Novelite</h1>
+    <p id="heroText">Create and share your stories with readers worldwide. Choose genres, age groups, and let your imagination run free.</p>
+    <div class="cta" onclick="document.getElementById('createForm').scrollIntoView({behavior:'smooth'});">Start Creating</div>
   </div>
-  <h1>Create Your Story</h1>
-  <p class="tag">Fill in your book details and preview it instantly.</p>
-</header>
-
-<!-- FORM -->
-<section class="form-container">
-  <h2>Book Information</h2>
-  <div class="field">
-    <label for="title">Title</label>
-    <input type="text" id="title" placeholder="Book Title">
-  </div>
-  <div class="field">
-    <label for="author">Author Name</label>
-    <input type="text" id="author" placeholder="Your name">
-  </div>
-  <div class="field">
-    <label for="cover">Cover Image URL</label>
-    <input type="text" id="cover" placeholder="https://...">
-  </div>
-  <div class="field">
-    <label>Genres</label>
-    <div class="checkbox-group" id="genres">
-      <label><input type="checkbox" value="Fantasy"> Fantasy</label>
-      <label><input type="checkbox" value="Romance"> Romance</label>
-      <label><input type="checkbox" value="Sci-Fi"> Sci-Fi</label>
-      <label><input type="checkbox" value="Thriller"> Thriller</label>
-      <label><input type="checkbox" value="Poetry"> Poetry</label>
-      <label><input type="checkbox" value="Mystery"> Mystery</label>
-    </div>
-  </div>
-  <div class="field">
-    <label for="age">Age Group</label>
-    <select id="age">
-      <option value="">Select Age Group</option>
-      <option value="Children">Children</option>
-      <option value="Teen">Teen</option>
-      <option value="Young Adult">Young Adult</option>
-      <option value="Adult">Adult</option>
-    </select>
-  </div>
-  <button class="btn" id="addBook">Add Book</button>
 </section>
 
-<!-- PREVIEW CARDS -->
-<section class="preview-cards" id="previewCards"></section>
+<!-- FORM SECTION -->
+<div class="form-container" id="createForm">
+  <h2>Book Submission</h2>
+  <form id="form">
+    <div class="field">
+      <label for="title">Book Title *</label>
+      <input id="title" type="text" placeholder="Enter book title" required>
+    </div>
+    <div class="field">
+      <label for="description">Description *</label>
+      <textarea id="description" rows="4" placeholder="Write a short description" required></textarea>
+    </div>
+    <div class="field">
+      <label>Cover Image (optional)</label>
+      <input id="cover" type="file" accept="image/*">
+    </div>
+    <div class="field">
+      <label>Book PDF *</label>
+      <input id="pdf" type="file" accept="application/pdf" required>
+    </div>
+
+    <!-- GENRE MULTI-SELECT -->
+    <div class="field">
+      <label>Genre(s) *</label>
+      <div class="multi-select" id="genreSelect">
+        <input type="text" placeholder="Type or select genre..." readonly>
+        <div class="tags-container"></div>
+        <ul class="options-list">
+          <li data-value="Fantasy">Fantasy</li>
+          <li data-value="Romance">Romance</li>
+          <li data-value="Thriller">Thriller</li>
+          <li data-value="Sci-Fi">Sci-Fi</li>
+          <li data-value="Poetry">Poetry</li>
+          <li data-value="Mystery">Mystery</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- AGE GROUP MULTI-SELECT -->
+    <div class="field">
+      <label>Age Group(s) *</label>
+      <div class="multi-select" id="ageSelect">
+        <input type="text" placeholder="Select age group..." readonly>
+        <div class="tags-container"></div>
+        <ul class="options-list">
+          <li data-value="Children">Children (0-12)</li>
+          <li data-value="Teen">Teen (13-17)</li>
+          <li data-value="Adult">Adult (18+)</li>
+          <li data-value="All Ages">All Ages</li>
+        </ul>
+      </div>
+    </div>
+
+    <button class="btn" type="submit">Submit Book</button>
+  </form>
+</div>
 
 <!-- BOTTOM NAV -->
-<nav class="bottom-nav" aria-label="Primary">
+<nav class="bottom-nav">
   <a class="nav-btn" href="index.html"><div class="ico">🏠</div><span>Home</span></a>
   <a class="nav-btn active" href="create.html"><div class="ico">✍️</div><span>Create</span></a>
   <a class="nav-btn" href="books.html"><div class="ico">📖</div><span>Books</span></a>
-  <a class="nav-btn" href="#" id="navProfile"><div class="ico">👤</div><span>Profile</span></a>
+  <a class="nav-btn" href="blog.html"><div class="ico">📰</div><span>Blog</span></a>
+  <a class="nav-btn" id="navProfile"><div class="ico">👤</div><span>Profile</span></a>
 </nav>
 
 <script>
-/* ===== LOADER ===== */
-window.addEventListener('load',()=> {
-  document.getElementById('loader').style.display='none';
-});
+// Loader
+window.addEventListener('load',()=> { document.getElementById('loader').style.display='none'; });
 
-/* ===== PROFILE NAV RESTRICTION ===== */
-const navProfile = document.getElementById('navProfile');
+// Profile nav
 function updateProfileNav(){
   const u = localStorage.getItem('novelite_user');
-  if(u){
-    navProfile.href = 'profile.html';
-  }else{
-    navProfile.href = '#';
-    navProfile.addEventListener('click', e=>{
-      e.preventDefault(); alert('Please login first!');
-    }, {once:true});
-  }
+  const navProfile = document.getElementById('navProfile');
+  if(u){ navProfile.href='profile.html'; } 
+  else{ navProfile.href='#'; navProfile.addEventListener('click', e=>{ e.preventDefault(); alert('Please login first'); },{once:true}); }
 }
 updateProfileNav();
 
-/* ===== BOOK CREATION ===== */
-const preview = document.getElementById('previewCards');
-const addBtn = document.getElementById('addBook');
+// Multi-select
+function initMultiSelect(wrapperId){
+  const wrapper = document.getElementById(wrapperId);
+  const input = wrapper.querySelector('input');
+  const options = wrapper.querySelector('.options-list');
+  const tagsContainer = wrapper.querySelector('.tags-container');
+  const selected = [];
 
-function renderCard(book){
-  const div = document.createElement('div'); div.className='card';
-  div.innerHTML=`
-    <div class="cover" style="background:url('${book.cover}') center/cover"></div>
-    <div class="title">${book.title}</div>
-    <div class="by">by ${book.author}</div>
-    <div class="chips">${book.genres.map(g=>'<span>'+g+'</span>').join('')}</div>
-    <div class="by"><em>Age: ${book.age}</em></div>
-  `;
-  preview.appendChild(div);
+  input.addEventListener('click', ()=>{ options.style.display = options.style.display==='block' ? 'none' : 'block'; });
+  options.querySelectorAll('li').forEach(li=>{
+    li.addEventListener('click', ()=>{
+      const val = li.dataset.value;
+      if(!selected.includes(val)){
+        selected.push(val);
+        const tag = document.createElement('div');
+        tag.className='tag';
+        tag.innerHTML=`${val} <span class="remove">&times;</span>`;
+        tagsContainer.appendChild(tag);
+        tag.querySelector('.remove').addEventListener('click', ()=>{ tagsContainer.removeChild(tag); selected.splice(selected.indexOf(val),1); });
+      }
+    });
+  });
+  document.addEventListener('click', e=>{ if(!wrapper.contains(e.target)) options.style.display='none'; });
+  return ()=>selected;
 }
+const getSelectedGenres = initMultiSelect('genreSelect');
+const getSelectedAges = initMultiSelect('ageSelect');
 
-function getSelectedGenres(){
-  return Array.from(document.querySelectorAll('#genres input:checked')).map(cb=>cb.value);
-}
+// Form submit
+document.getElementById('form').addEventListener('submit', e=>{
+  e.preventDefault();
+  const title = document.getElementById('title').value.trim();
+  const description = document.getElementById('description').value.trim();
+  const cover = document.getElementById('cover').files[0];
+  const pdf = document.getElementById('pdf').files[0];
+  const genres = getSelectedGenres();
+  const ages = getSelectedAges();
 
-function saveBook(){
-  const book={
-    title: document.getElementById('title').value.trim(),
-    author: document.getElementById('author').value.trim(),
-    cover: document.getElementById('cover').value.trim(),
-    genres: getSelectedGenres(),
-    age: document.getElementById('age').value
-  };
-  if(!book.title || !book.author || !book.cover || !book.age || book.genres.length===0){
-    alert('Please fill all fields and select genres.');
-    return;
-  }
-  let books = JSON.parse(localStorage.getItem('novelite_books')||'[]');
-  books.push(book);
-  localStorage.setItem('novelite_books', JSON.stringify(books));
-  renderCard(book);
-}
+  if(!pdf){ alert('PDF is required'); return; }
+  if(genres.length===0 || ages.length===0){ alert('Select at least one genre and age group'); return; }
 
-addBtn.addEventListener('click', saveBook);
-
-/* ===== LOAD SAVED BOOKS ===== */
-window.addEventListener('DOMContentLoaded', ()=>{
   const books = JSON.parse(localStorage.getItem('novelite_books')||'[]');
-  books.forEach(renderCard);
+  books.push({title, description, cover: cover?.name || '', pdf: pdf.name, genres, ages, date:new Date().toISOString()});
+  localStorage.setItem('novelite_books', JSON.stringify(books));
+
+  alert('Book submitted successfully!');
+  window.location.href='books.html';
 });
+
+// Dynamic Hero Text & Image
+const heroTitles = ["Welcome to Novelite", "Share Your Story", "Reach Readers Worldwide", "Create & Inspire"];
+const heroTexts = [
+  "Create and share your stories with readers worldwide.",
+  "Choose genres, age groups, and let your imagination run free.",
+  "Upload your book and let the world read your creativity.",
+  "Join Novelite and become part of the global writing community."
+];
+const heroImages = [
+  "https://source.unsplash.com/1600x900/?books,library",
+  "https://source.unsplash.com/1600x900/?writing,novel",
+  "https://source.unsplash.com/1600x900/?reading,stories",
+  "https://source.unsplash.com/1600x900/?authors,books"
+];
+let heroIndex=0;
+setInterval(()=>{
+  heroIndex = (heroIndex+1)%heroTitles.length;
+  document.getElementById('heroTitle').textContent = heroTitles[heroIndex];
+  document.getElementById('heroText').textContent = heroTexts[heroIndex];
+  document.getElementById('heroImg').style.opacity=0;
+  setTimeout(()=>{ document.getElementById('heroImg').src=heroImages[heroIndex]; document.getElementById('heroImg').style.opacity=1; }, 500);
+},7000);
 </script>
+
 </body>
 </html>
