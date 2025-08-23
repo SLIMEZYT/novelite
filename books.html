@@ -1,58 +1,69 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Novelite — Books</title>
-
-<!-- ======= Loader & Nav Styles ======= -->
 <style>
-  /* ===== Loader ===== */
-  .loader{
-    position:fixed; inset:0; background:#fff;
-    display:flex; align-items:center; justify-content:center; z-index:9999;
+  :root{
+    --green:#014421;
+    --gold:#FFD700;
+    --white:#FFFFFF;
+    --ink: rgba(1,68,33,.08);
+    --glass: rgba(255,255,255,.08);
+    --glass-bd: rgba(255,215,0,.25);
   }
-  .quill{
-    width:72px; height:72px; position:relative;
-    filter: drop-shadow(0 6px 18px rgba(0,0,0,.15));
-  }
+  *{box-sizing:border-box; margin:0; padding:0}
+  body{font-family: "Inter", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; background: var(--white); color:#111; min-height:100vh; overflow-x:hidden;}
+
+  /* ===== LOADER ===== */
+  .loader{position:fixed; inset:0; background:var(--white); display:flex; align-items:center; justify-content:center; z-index:9999;}
+  .quill{width:72px; height:72px; position:relative; filter: drop-shadow(0 6px 18px rgba(0,0,0,.15));}
   .quill:before{
     content:"";
     position:absolute; inset:0;
     background:
-      radial-gradient(circle at 70% 30%, #FFD700 0 10px, transparent 11px),
-      linear-gradient(135deg, #FFD700 35%, #c9a200 36% 45%, #FFD700 46%);
+      radial-gradient(circle at 70% 30%, var(--gold) 0 10px, transparent 11px),
+      linear-gradient(135deg, var(--gold) 35%, #c9a200 36% 45%, var(--gold) 46%);
     clip-path: polygon(30% 0, 100% 0, 70% 70%, 55% 100%, 45% 70%, 0 40%);
     border-radius:8px;
     animation: float 1.8s ease-in-out infinite;
   }
-  .ink-ring{
-    position:absolute; width:120px; height:120px; border-radius:50%;
-    border:4px solid rgba(1,68,33,.08); animation: ripple 1.8s ease-out infinite;
-  }
+  .ink-ring{position:absolute; width:120px; height:120px; border-radius:50%; border:4px solid var(--ink); animation: ripple 1.8s ease-out infinite;}
   @keyframes float{50%{transform: translateY(-6px) rotate(-2deg)}}
   @keyframes ripple{from{transform:scale(.7); opacity:1} to{transform:scale(1.2); opacity:0}}
 
-  /* ===== Bottom Nav ===== */
+  /* ===== SECTIONS ===== */
+  section{padding:32px 20px; max-width:1100px; margin:0 auto;}
+  .section-title{color:var(--green); font-size: clamp(22px, 2.8vw, 28px); margin-bottom:14px; position:relative;}
+  .section-title:after{content:""; display:block; width:64px; height:4px; background:var(--gold); border-radius:2px; margin-top:6px;}
+  .cards{display:grid; grid-template-columns:repeat(auto-fit, minmax(200px,1fr)); gap:14px;}
+  .card{background:#fff; border:1px solid rgba(1,68,33,.12); border-radius:16px; overflow:hidden; box-shadow:0 6px 14px rgba(0,0,0,.06); transition:.25s; position:relative;}
+  .card:hover{transform: translateY(-4px)}
+  .cover{aspect-ratio: 3/4; background:#eee; background-size:cover; background-position:center;}
+  .card .meta{padding:12px;}
+  .card .title{font-weight:700; color:#222;}
+  .card .by{font-size:12px; color:#666; margin-top:4px;}
+
+  /* ===== COUNTDOWN BEFORE BOOKS ===== */
+  #booksCountdown{text-align:center; font-weight:600; color:var(--green); margin-bottom:16px; display:none;}
+
+  /* ===== BOTTOM NAV ===== */
   .bottom-nav{
     position:fixed; left:50%; bottom:18px; transform:translateX(-50%);
     width: min(560px, 92%); display:flex; justify-content:space-between; align-items:center; gap:8px;
     padding:10px 12px; border-radius:22px;
-    background: rgba(255,255,255,.08); backdrop-filter: blur(12px) saturate(150%);
-    border:1px solid rgba(255,215,0,.25);
-    box-shadow: 0 10px 30px rgba(0,0,0,.15); z-index:9000; animation: floatbar 4s ease-in-out infinite;
+    background: var(--glass); backdrop-filter: blur(12px) saturate(150%);
+    border:1px solid var(--glass-bd);
+    box-shadow: 0 10px 30px rgba(0,0,0,.15);
+    z-index:9000; animation: floatbar 4s ease-in-out infinite;
   }
   @keyframes floatbar{50%{transform:translateX(-50%) translateY(-3px)}}
-  .nav-btn{
-    flex:1; display:flex; flex-direction:column; align-items:center; gap:6px;
-    padding:8px 6px; border-radius:14px; cursor:pointer; user-select:none;
-    color:#0f0f0f; text-decoration:none; font-size:12px; font-weight:600;
-    transition:.2s; position:relative; overflow:hidden;
-  }
-  .nav-btn .ico{font-size:18px}
-  .nav-btn:hover{background:rgba(255,255,255,.25)}
-  .nav-btn.active{background:rgba(255,215,0,.25); border:1px solid rgba(255,215,0,.25);}
-  .nav-btn.active .ico, .nav-btn.active span{color:#014421}
+  .nav-btn{flex:1; display:flex; flex-direction:column; align-items:center; gap:6px; padding:8px 6px; border-radius:14px; cursor:pointer; user-select:none; color:#0f0f0f; text-decoration:none; font-size:12px; font-weight:600; transition:.2s; position:relative; overflow:hidden;}
+  .nav-btn .ico{font-size:18px;}
+  .nav-btn:hover{background:rgba(255,255,255,.25);}
+  .nav-btn.active{background:rgba(255,215,0,.25); border:1px solid var(--glass-bd);}
+  .nav-btn.active .ico, .nav-btn.active span{color:var(--green);}
 </style>
 </head>
 <body>
@@ -63,60 +74,116 @@
   <div class="quill"></div>
 </div>
 
-<!-- PAGE CONTENT -->
-<section style="padding:20px; max-width:900px; margin:0 auto;">
-  <h1>Saved Books</h1>
-  <div id="booksContainer" style="display:grid; grid-template-columns:repeat(auto-fill,minmax(180px,1fr)); gap:16px; margin-top:20px;"></div>
+<!-- BOOKS COUNTDOWN -->
+<div id="booksCountdown"></div>
+
+<!-- FEATURED BOOKS -->
+<section aria-labelledby="feat">
+  <h2 id="feat" class="section-title">Featured Books</h2>
+  <div class="cards" id="featuredBooks"></div>
+</section>
+
+<section aria-labelledby="newBooksSection">
+  <h2 id="newBooksSection" class="section-title">New Arrivals</h2>
+  <div class="cards" id="newBooks"></div>
+</section>
+
+<section aria-labelledby="recommendedSection">
+  <h2 id="recommendedSection" class="section-title">Recommended</h2>
+  <div class="cards" id="recommendedBooks"></div>
 </section>
 
 <!-- BOTTOM NAV -->
 <nav class="bottom-nav" aria-label="Primary">
-  <a class="nav-btn" href="index.html"><div class="ico">🏠</div><span>Home</span></a>
-  <a class="nav-btn active" href="books.html"><div class="ico">📖</div><span>Books</span></a>
+  <a class="nav-btn active" href="index.html"><div class="ico">🏠</div><span>Home</span></a>
+  <a class="nav-btn" href="books.html"><div class="ico">📖</div><span>Books</span></a>
   <a class="nav-btn" href="write.html"><div class="ico">✍️</div><span>Write</span></a>
   <a class="nav-btn" href="blog.html"><div class="ico">📰</div><span>Blog</span></a>
   <a class="nav-btn" href="#" id="navProfile"><div class="ico">👤</div><span>Profile</span></a>
 </nav>
 
-<!-- ======= Scripts ======= -->
-<script type="module">
-  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
-
-  const supabaseUrl = 'YOUR_SUPABASE_URL';
-  const supabaseAnonKey = 'YOUR_SUPABASE_ANON_KEY';
-  const supabase = createClient(supabaseUrl, supabaseAnonKey);
-
+<script>
+// ===== LOADER =====
+window.addEventListener('load', () => {
   const loader = document.getElementById('loader');
-  window.addEventListener('load', ()=> {
-    loader.style.opacity = '0';
-    setTimeout(()=> loader.style.display='none', 250);
-  });
+  loader.style.opacity = '0';
+  setTimeout(() => loader.style.display='none', 250);
+});
 
-  // ===== Fetch Saved Books =====
-  const container = document.getElementById('booksContainer');
-  async function loadBooks() {
-    const { data, error } = await supabase.from('stories').select('*').order('id', {ascending:false});
-    if(error){ container.innerHTML = `<p>Error loading books: ${error.message}</p>`; return; }
-    if(!data || data.length===0){ container.innerHTML = `<p>No saved books yet.</p>`; return; }
+// ===== BOOKS DATA =====
+const booksData = {
+  featured: [
+    {title:"The Emerald Chronicle", author:"A. Writer", cover:"https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?q=80&w=900&auto=format&fit=crop"},
+    {title:"Golden Threads", author:"B. Author", cover:"https://images.unsplash.com/photo-1495446815901-a7297e633e8d?q=80&w=900&auto=format&fit=crop"}
+  ],
+  new: [
+    {title:"Ink & Shadows", author:"D. Storyteller", cover:"https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=900&auto=format&fit=crop"},
+    {title:"Silent Whispers", author:"E. Poet", cover:"https://images.unsplash.com/photo-1473862177823-f8ce6b8f89b1?q=80&w=900&auto=format&fit=crop"}
+  ],
+  recommended: [
+    {title:"Nightfall Tales", author:"F. Novelist", cover:"https://images.unsplash.com/photo-1507842217343-583bb7270b66?q=80&w=900&auto=format&fit=crop"},
+    {title:"River of Thoughts", author:"G. Author", cover:"https://images.unsplash.com/photo-1526318472351-3c290f2e1464?q=80&w=900&auto=format&fit=crop"}
+  ]
+};
 
-    container.innerHTML = data.map(book=>`
-      <div style="border:1px solid #ccc; border-radius:12px; overflow:hidden;">
-        <div style="aspect-ratio:3/4; background:url('${book.cover}') center/cover"></div>
-        <div style="padding:8px;">
-          <strong>${book.title}</strong>
-          <p style="font-size:12px; margin:4px 0;">by ${book.authorName}</p>
-        </div>
+// ===== FUNCTION TO RENDER BOOKS =====
+function renderBooks(sectionId, books){
+  const container = document.getElementById(sectionId);
+  container.innerHTML = '';
+  books.forEach(b => {
+    const card = document.createElement('article');
+    card.className = 'card';
+    card.innerHTML = `
+      <div class="cover" style="background-image:url('${b.cover}')" aria-label="${b.title} cover image"></div>
+      <div class="meta">
+        <div class="title">${b.title}</div>
+        <div class="by">by ${b.author}</div>
       </div>
-    `).join('');
-  }
-  loadBooks();
+    `;
+    container.appendChild(card);
+  });
+}
 
-  // ===== Simple Online Timer =====
-  setInterval(()=>{
-    const now = new Date();
-    document.title = `Books | ${now.toLocaleTimeString()}`;
-  },1000);
+// ===== DYNAMIC FETCH ONLY ON DEC 20TH WITH COUNTDOWN =====
+const today = new Date();
+if(today.getMonth() === 11 && today.getDate() === 20){ // December 20th
+  const countdownEl = document.getElementById('booksCountdown');
+  let secondsLeft = 5;
+  countdownEl.textContent = `Books will appear in ${secondsLeft} seconds...`;
+  countdownEl.style.display = 'block';
 
+  const countdownInterval = setInterval(() => {
+    secondsLeft--;
+    countdownEl.textContent = `Books will appear in ${secondsLeft} seconds...`;
+    if(secondsLeft <= 0){
+      clearInterval(countdownInterval);
+      countdownEl.style.display = 'none';
+      renderBooks('featuredBooks', booksData.featured);
+      renderBooks('newBooks', booksData.new);
+      renderBooks('recommendedBooks', booksData.recommended);
+
+      // JSON-LD for SEO
+      const allBooks = [...booksData.featured, ...booksData.new, ...booksData.recommended];
+      const structuredData = {
+        "@context": "https://schema.org",
+        "@type": "ItemList",
+        "itemListElement": allBooks.map((b,i) => ({
+          "@type": "Book",
+          "position": i+1,
+          "name": b.title,
+          "author": b.author,
+          "image": b.cover,
+          "url": "#"
+        }))
+      };
+      const scriptTag = document.createElement('script');
+      scriptTag.type = 'application/ld+json';
+      scriptTag.textContent = JSON.stringify(structuredData, null, 2);
+      document.head.appendChild(scriptTag);
+    }
+  }, 1000);
+}
 </script>
+
 </body>
 </html>
