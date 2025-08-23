@@ -4,199 +4,122 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Novelite Books</title>
-<!-- Quill CSS -->
 <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
 <style>
 :root {
-    --royal-green: #006400;
-    --gold: #FFD700;
-    --white: #FFFFFF;
-    --glass: rgba(255,255,255,0.1);
-    --glass-bd: rgba(255,255,255,0.3);
+    --royal-green:#006400; --gold:#FFD700; --white:#fff;
 }
 
-body {
-    font-family: Arial, sans-serif;
-    margin:0;
-    padding:0;
-    background:#f8f8f8;
-    color:#000;
+/* Loader */
+#loader {
+    position:fixed; top:0; left:0;width:100%; height:100%;
+    background:var(--royal-green); color:var(--white);
+    display:flex; flex-direction:column; justify-content:center; align-items:center;
+    z-index:100000;
 }
+.spinner {
+    border:6px solid rgba(255,255,255,0.3);
+    border-top:6px solid var(--gold); border-radius:50%; width:50px; height:50px;
+    animation:spin 1s linear infinite; margin-bottom:1rem;
+}
+@keyframes spin {100%{transform:rotate(360deg);}}
 
-header {
-    background: var(--royal-green);
-    color: var(--white);
-    padding: 1rem;
-    text-align:center;
-}
+/* Body & Hero */
+body {margin:0;padding:0;font-family:Arial,sans-serif;background:#f8f8f8;color:#000;}
+.hero {background:linear-gradient(135deg,var(--royal-green),var(--gold)); color:var(--white); text-align:center; padding:4rem 1rem;}
+.hero h1{font-size:2.5rem;margin-bottom:1rem;}
+.hero p{font-size:1.2rem;margin-bottom:2rem;}
+.hero button{background:var(--white);color:var(--royal-green);border:none;padding:.8rem 2rem;border-radius:25px;font-size:1rem;cursor:pointer;font-weight:bold;transition:.3s;}
+.hero button:hover{background:rgba(255,255,255,.8);}
 
-.top-nav {
-    display:flex;
-    justify-content:space-around;
-    background: var(--royal-green);
-    padding:0.5rem 0;
-}
+/* Sections */
+section{padding:2rem 1rem; opacity:0; transform:translateY(20px); transition:all .6s ease;}
+section.visible{opacity:1; transform:translateY(0);}
+.section-title{font-size:1.5rem;font-weight:bold;color:var(--royal-green);margin-bottom:1rem;}
+.books-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(180px,1fr)); gap:1rem;}
 
-.top-nav button {
-    background:none;
-    border:none;
-    color: var(--white);
-    font-weight:bold;
-    cursor:pointer;
-    transition:.2s;
-}
-.top-nav button:hover {
-    color: var(--gold);
-    text-decoration:underline;
-}
+/* Book card */
+.book-card{background:var(--white);border-radius:16px;box-shadow:0 5px 20px rgba(0,0,0,0.1);text-align:center;cursor:pointer;padding:.5rem;position:relative;transition:.3s;}
+.book-card:hover{transform:translateY(-5px) scale(1.03);box-shadow:0 15px 25px rgba(0,0,0,0.2);}
+.book-card img{width:100%;border-radius:12px; height:240px; object-fit:cover;}
+.book-card h3{margin:.3rem 0;font-size:1rem;color:var(--royal-green);}
+.book-card p{margin:.2rem 0;font-size:.85rem;height:2.5em;overflow:hidden;}
+.book-card .author{font-size:.75rem;color:#555;margin-bottom:.3rem;}
+.fav-btn{position:absolute;top:8px;right:8px;font-size:20px;cursor:pointer;color:#ccc;transition:.2s;}
+.fav-btn.active{color:var(--gold);}
+.progress-container{height:6px;background:#eee;border-radius:3px;margin-top:4px;}
+.progress-bar{height:100%;background:var(--gold);border-radius:3px;width:0%;}
 
-main {padding:1rem;}
-.book-section {margin-bottom:100px;}
-.hidden {display:none;}
-.books-grid {
-    display:grid;
-    grid-template-columns:repeat(auto-fill, minmax(150px, 1fr));
-    gap:1rem;
-}
-.books-grid p {color:#666;}
-
-.book-card {
-    background: var(--white);
-    border-radius:8px;
-    box-shadow:0 2px 5px rgba(0,0,0,0.1);
-    text-align:center;
-    cursor:pointer;
-    transition:.2s;
-}
-.book-card:hover {
-    transform:translateY(-3px);
-    box-shadow:0 5px 15px rgba(0,0,0,0.2);
-}
-.book-card img {width:100%; height:auto; border-radius:4px;}
-.book-card h3 {margin:0.5rem 0 0.2rem 0; color: var(--royal-green);}
-.book-card p {margin:0.2rem 0; font-size:0.9rem;}
-
-/* Form styling */
-form label {display:block; margin:0.5rem 0;}
-form input, form textarea {width:100%; padding:0.5rem; margin-top:0.2rem; border-radius:4px; border:1px solid #ccc;}
-form button {margin-top:0.5rem; padding:0.5rem 1rem; background: var(--gold); color: var(--royal-green); border:none; border-radius:4px; cursor:pointer;}
-.price-field {display:none;}
-.ql-container {height:150px; margin-bottom:0.5rem;}
+/* PDF button */
+.pdf-btn{display:inline-block;margin-top:4px;padding:.3rem .6rem;font-size:.75rem;background:var(--royal-green);color:var(--white);border-radius:6px;text-decoration:none;transition:.3s;}
+.pdf-btn:hover{background:var(--gold); color:var(--royal-green);}
 
 /* Modal */
-#bookModal {
-    display:none;
-    position:fixed;
-    top:0; left:0;
-    width:100%; height:100%;
-    background:rgba(0,0,0,0.6);
-    justify-content:center;
-    align-items:center;
-    z-index:10000;
-}
-.modal-content {
-    background: var(--white);
-    padding:1rem;
-    border-radius:8px;
-    width:90%;
-    max-width:400px;
-    text-align:center;
-}
-.modal-content img {width:100%; border-radius:4px; margin-bottom:0.5rem;}
-.modal-content h3 {color: var(--royal-green);}
-.modal-content button {
-    margin-top:0.5rem;
-    padding:0.5rem 1rem;
-    background: var(--gold);
-    color: var(--royal-green);
-    border:none;
-    border-radius:4px;
-    cursor:pointer;
-}
+#bookModal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.6);justify-content:center;align-items:center;z-index:10000;}
+.modal-content{background:var(--white);padding:1rem;border-radius:12px;width:90%;max-width:400px;text-align:center;}
+.modal-content img{width:100%;border-radius:12px;margin-bottom:.5rem;}
+.modal-content h3{color:var(--royal-green);margin:.5rem 0;}
+.modal-content button{padding:.5rem 1rem;background:var(--gold);color:var(--white);border:none;border-radius:6px;cursor:pointer;margin-top:.5rem;}
 
-/* Bottom Liquid Glass Nav */
+/* ============ BOTTOM LIQUID GLASS NAV ============ */
 .bottom-nav{
-    position:fixed; left:50%; bottom:18px; transform:translateX(-50%);
-    width:min(560px,92%); display:flex; justify-content:space-between; align-items:center; gap:8px;
-    padding:10px 12px; border-radius:22px;
-    background: var(--glass); backdrop-filter: blur(12px) saturate(150%);
-    border:1px solid var(--glass-bd);
-    box-shadow:0 10px 30px rgba(0,0,0,.15);
-    z-index:9000; animation: floatbar 4s ease-in-out infinite;
+  position:fixed; left:50%; bottom:18px; transform:translateX(-50%);
+  width: min(560px, 92%); display:flex; justify-content:space-between; align-items:center; gap:8px;
+  padding:10px 12px; border-radius:22px;
+  background: rgba(255,255,255,0.15); backdrop-filter: blur(15px) saturate(150%);
+  border:1px solid rgba(255,255,255,0.3);
+  box-shadow: 0 10px 30px rgba(0,0,0,.15);
+  z-index:9000; animation: floatbar 4s ease-in-out infinite;
 }
 @keyframes floatbar{50%{transform:translateX(-50%) translateY(-3px)}}
+
 .nav-btn{
-    flex:1; display:flex; flex-direction:column; align-items:center; gap:6px;
-    padding:8px 6px; border-radius:14px; cursor:pointer; user-select:none;
-    color:#0f0f0f; text-decoration:none; font-size:12px; font-weight:600;
-    transition:.2s; position:relative; overflow:hidden;
+  flex:1; display:flex; flex-direction:column; align-items:center; gap:6px;
+  padding:8px 6px; border-radius:14px; cursor:pointer; user-select:none;
+  color:#0f0f0f; text-decoration:none; font-size:12px; font-weight:600;
+  transition:.2s; position:relative; overflow:hidden;
 }
 .nav-btn .ico{font-size:18px}
-.nav-btn:hover{background:rgba(255,255,255,.25);}
-.nav-btn.active{background:rgba(255,215,0,.25); border:1px solid var(--glass-bd);}
-.nav-btn.active .ico, .nav-btn.active span{color:var(--green);}
+.nav-btn:hover{background:rgba(255,255,255,.25)}
+.nav-btn.active{background:rgba(255,215,0,.25); border:1px solid rgba(255,255,255,.3)}
+.nav-btn.active .ico, .nav-btn.active span{color:var(--royal-green)}
 .nav-btn:after{
-    content:""; position:absolute; width:8px; height:8px; background:rgba(255,215,0,.6); border-radius:50%;
-    transform:scale(0); opacity:0; pointer-events:none;
+  content:""; position:absolute; width:8px; height:8px; background:rgba(255,215,0,.6); border-radius:50%;
+  transform:scale(0); opacity:0; pointer-events:none;
+}
+.nav-btn:active:after{
+  animation:ripple 0.6s linear forwards;
+}
+@keyframes ripple{
+  0%{transform:scale(0); opacity:0.6;}
+  100%{transform:scale(15); opacity:0;}
 }
 
-/* Ripple effect */
-.nav-btn:active:after{
-    transform:scale(3);
-    opacity:.5;
-    transition:transform .3s, opacity .5s;
-}
+/* Responsive */
+@media(max-width:500px){.books-grid{grid-template-columns:repeat(auto-fill,minmax(140px,1fr));} .hero h1{font-size:2rem;} .hero p{font-size:1rem;}}
 </style>
 </head>
 <body>
-<header>Novelite Books</header>
 
-<!-- Top Nav -->
-<nav class="top-nav">
-    <button id="availableBtn">Available Books</button>
-    <button id="wishlistBtn">Wishlist</button>
-    <button id="continueBtn">Continue Reading</button>
-</nav>
+<!-- Loader -->
+<div id="loader">
+    <div class="spinner"></div>
+    <p>Loading Books...</p>
+</div>
 
-<main>
-    <!-- Available Books -->
-    <section id="availableSection" class="book-section">
-        <h2>Available Books</h2>
-        <div id="books-container" class="books-grid">
-            <p>No books available yet.</p>
-        </div>
-    </section>
+<!-- Hero -->
+<div class="hero">
+    <h1>Discover Your Next Read</h1>
+    <p>Explore, Favourite, and Download Novels</p>
+    <button onclick="scrollToSection('featured')">Browse Books</button>
+</div>
 
-    <!-- Wishlist -->
-    <section id="wishlistSection" class="book-section hidden">
-        <h2>Your Wishlist</h2>
-        <div id="wishlist-container" class="books-grid">
-            <p>No saved books in your wishlist.</p>
-        </div>
-    </section>
-
-    <!-- Continue Reading -->
-    <section id="continueSection" class="book-section hidden">
-        <h2>Continue Reading</h2>
-        <div id="continue-container" class="books-grid">
-            <p>You haven't started any books yet.</p>
-        </div>
-    </section>
-
-    <!-- Add/Edit Book Form (Authors Only) -->
-    <section id="addBookSection" class="book-section hidden">
-        <h2>Add/Edit Book</h2>
-        <form id="bookForm">
-            <label>Title: <input type="text" name="title" required></label>
-            <label>Description:</label>
-            <div id="editor-container"></div>
-            <label>Category: <input type="text" name="category"></label>
-            <label>Cover Image URL: <input type="text" name="cover"></label>
-            <label class="price-field">Price: <input type="text" name="price"></label>
-            <button type="submit">Save Book</button>
-        </form>
-    </section>
-</main>
+<!-- Sections -->
+<section id="featured"><h2 class="section-title">Featured Books</h2><div id="featured-container" class="books-grid"><p>Loading...</p></div></section>
+<section id="newArrivals"><h2 class="section-title">New Arrivals</h2><div id="new-container" class="books-grid"><p>Loading...</p></div></section>
+<section id="recommended"><h2 class="section-title">Recommended</h2><div id="rec-container" class="books-grid"><p>Loading...</p></div></section>
+<section id="continue"><h2 class="section-title">Continue Reading</h2><div id="continue-container" class="books-grid"><p>Loading...</p></div></section>
+<section id="wishlist"><h2 class="section-title">Wishlist</h2><div id="wishlist-container" class="books-grid"><p>Loading...</p></div></section>
 
 <!-- Modal -->
 <div id="bookModal">
@@ -204,6 +127,8 @@ form button {margin-top:0.5rem; padding:0.5rem 1rem; background: var(--gold); co
         <img id="modalCover" src="" alt="Book Cover">
         <h3 id="modalTitle"></h3>
         <p id="modalDesc"></p>
+        <p class="author" id="modalAuthor"></p>
+        <a id="pdfBtn" class="pdf-btn" href="#" target="_blank" style="display:none;">Download PDF</a>
         <button id="favBtn">Add to Favourites</button>
         <button onclick="closeModal()">Close</button>
     </div>
@@ -211,121 +136,112 @@ form button {margin-top:0.5rem; padding:0.5rem 1rem; background: var(--gold); co
 
 <!-- Bottom Nav -->
 <nav class="bottom-nav">
-    <div class="nav-btn"><span class="ico">🏠</span><span>Home</span></div>
-    <div class="nav-btn"><span class="ico">🔍</span><span>Search</span></div>
-    <div class="nav-btn"><span class="ico">📚</span><span>Library</span></div>
-    <div class="nav-btn"><span class="ico">👤</span><span>Profile</span></div>
+    <a href="home.html" class="nav-btn"><span class="ico">🏠</span><span>Home</span></a>
+    <a href="books.html" class="nav-btn"><span class="ico">📚</span><span>Books</span></a>
+    <a href="write.html" class="nav-btn"><span class="ico">✍️</span><span>Write</span></a>
+    <a href="home.html" class="nav-btn"><span class="ico">📝</span><span>Blog</span></a>
+    <a href="home.html" class="nav-btn"><span class="ico">👤</span><span>Profile</span></a>
 </nav>
 
-<!-- Quill JS -->
 <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
 <script>
-// === JS ===
+// Loader & section animation
+document.addEventListener('DOMContentLoaded',()=>{
+    setTimeout(()=>{document.getElementById('loader').style.display='none'; fetchBooks(); checkSections(); setActiveNav();},800);
+    window.addEventListener('scroll', checkSections);
+});
 
-// Simulate user
-const user = {loggedIn:true, role:"author"};
-if(!user.loggedIn){
-    document.body.innerHTML = "<h2>Please log in to access Books page.</h2>";
+// Fade-in sections
+const sections = document.querySelectorAll('section');
+function checkSections(){
+    const trigger = window.innerHeight * 0.85;
+    sections.forEach(sec=>{if(sec.getBoundingClientRect().top<trigger) sec.classList.add('visible');});
 }
 
-// Quill editor
-var quill = new Quill('#editor-container', {theme:'snow'});
+// Scroll helper
+function scrollToSection(id){document.getElementById(id).scrollIntoView({behavior:'smooth'});}
 
-// Sections toggle
-const availableBtn = document.getElementById('availableBtn');
-const wishlistBtn = document.getElementById('wishlistBtn');
-const continueBtn = document.getElementById('continueBtn');
-const sections = {
-    available: document.getElementById('availableSection'),
-    wishlist: document.getElementById('wishlistSection'),
-    continue: document.getElementById('continueSection')
-};
-availableBtn.addEventListener('click',()=>toggleSection('available'));
-wishlistBtn.addEventListener('click',()=>toggleSection('wishlist'));
-continueBtn.addEventListener('click',()=>toggleSection('continue'));
-function toggleSection(sec){
-    Object.keys(sections).forEach(k=>sections[k].classList.add('hidden'));
-    sections[sec].classList.remove('hidden');
+// Set active nav button
+function setActiveNav(){
+    const navLinks = document.querySelectorAll('.bottom-nav .nav-btn');
+    const currentPath = window.location.pathname;
+    navLinks.forEach(link=>{
+        if(link.getAttribute('href') === currentPath){
+            link.classList.add('active');
+        } else {
+            link.classList.remove('active');
+        }
+    });
 }
 
-// Sample books array
-let books = [
-    {title:"Book One",desc:"First book description",cover:"https://via.placeholder.com/150",id:1},
-    {title:"Book Two",desc:"Second book description",cover:"https://via.placeholder.com/150",id:2},
-];
-let wishlist = [];
+// Books data
+let books = []; let wishlist = [];
 
-// Render Available Books
-function renderBooks(){
-    const container = document.getElementById('books-container');
-    container.innerHTML = '';
-    if(books.length===0){container.innerHTML='<p>No books available yet.</p>'; return;}
-    books.forEach(b=>{
-        const card = document.createElement('div');
-        card.className='book-card';
-        card.innerHTML=`<img src="${b.cover}"><h3>${b.title}</h3><p>${b.desc.substring(0,50)}...</p>`;
-        card.onclick=()=>openModal(b);
+// Fetch books dynamically
+async function fetchBooks(){
+    try{
+        const res = await fetch('/api/stories');
+        books = await res.json();
+
+        const featured = books.filter(b=>b.featured);
+        const newArrivals = books.slice(-6);
+        const recommended = books.filter(b=>b.recommended);
+        const continueReading = books.filter(b=>b.progress>0);
+        const wishlistRes = await fetch('/api/books/wishlist?userId=testUser123');
+        wishlist = await wishlistRes.json();
+
+        renderBooks('featured-container',featured);
+        renderBooks('new-container',newArrivals);
+        renderBooks('rec-container',recommended);
+        renderBooks('continue-container',continueReading,true);
+        renderBooks('wishlist-container',books.filter(b=>wishlist.includes(b.id)));
+    }catch(err){console.error(err);}
+}
+
+// Render book cards
+function renderBooks(containerId,arr,showProgress=false){
+    const container=document.getElementById(containerId);
+    container.innerHTML='';
+    if(arr.length===0){container.innerHTML='<p>No books available</p>'; return;}
+    arr.forEach(book=>{
+        const card=document.createElement('div'); card.className='book-card';
+        card.innerHTML=`<img src="${book.cover || 'https://via.placeholder.com/180x240'}" alt="cover">
+        <h3>${book.title}</h3><p>${book.desc.replace(/<[^>]*>?/gm,'')}</p>
+        <p class="author">${book.authorName}</p>
+        <div class="fav-btn ${wishlist.includes(book.id)?'active':''}" onclick="toggleFav(${book.id},event)">★</div>
+        ${book.pdf?`<a href="${book.pdf}" class="pdf-btn" target="_blank">Download PDF</a>`:''}
+        ${showProgress?`<div class="progress-container"><div class="progress-bar" style="width:${book.progress}%"></div></div>`:''}`;
+        card.onclick=()=>openModal(book);
         container.appendChild(card);
     });
 }
-renderBooks();
 
-// Modal functions
-const modal = document.getElementById('bookModal');
-const modalTitle = document.getElementById('modalTitle');
-const modalDesc = document.getElementById('modalDesc');
-const modalCover = document.getElementById('modalCover');
-let currentBook=null;
+// Modal
+const modal=document.getElementById('bookModal');
 function openModal(book){
-    currentBook=book;
-    modalTitle.textContent=book.title;
-    modalDesc.textContent=book.desc;
-    modalCover.src=book.cover;
     modal.style.display='flex';
+    document.getElementById('modalCover').src=book.cover||'https://via.placeholder.com/300x400';
+    document.getElementById('modalTitle').textContent=book.title;
+    document.getElementById('modalDesc').innerHTML=book.desc;
+    document.getElementById('modalAuthor').textContent=book.authorName;
+    const pdfBtn=document.getElementById('pdfBtn');
+    if(book.pdf){pdfBtn.href=book.pdf; pdfBtn.style.display='inline-block';}else{pdfBtn.style.display='none';}
+    document.getElementById('favBtn').onclick=()=>toggleFav(book.id);
 }
 function closeModal(){modal.style.display='none';}
 
-// Add to favourites
-document.getElementById('favBtn').addEventListener('click',()=>{
-    if(!wishlist.includes(currentBook)){
-        wishlist.push(currentBook);
-        renderWishlist();
-        alert("Book added to favourites!");
-    }
-});
-
-// Render Wishlist
-function renderWishlist(){
-    const container = document.getElementById('wishlist-container');
-    container.innerHTML='';
-    if(wishlist.length===0){container.innerHTML='<p>No saved books in your wishlist.</p>'; return;}
-    wishlist.forEach(b=>{
-        const card = document.createElement('div');
-        card.className='book-card';
-        card.innerHTML=`<img src="${b.cover}"><h3>${b.title}</h3><p>${b.desc.substring(0,50)}...</p>`;
-        container.appendChild(card);
-    });
-}
-
-// Add/Edit book form (authors only)
-if(user.role==='author'){
-    document.getElementById('addBookSection').classList.remove('hidden');
-    document.querySelector('.price-field').style.display='block';
-    const bookForm=document.getElementById('bookForm');
-    bookForm.addEventListener('submit',e=>{
-        e.preventDefault();
-        const newBook={
-            title:bookForm.title.value,
-            desc: quill.root.innerHTML,
-            cover:bookForm.cover.value,
-            id:Date.now()
-        };
-        books.push(newBook);
-        renderBooks();
-        bookForm.reset();
-        quill.setContents([]);
-        toggleSection('available');
-    });
+// Toggle favourite
+async function toggleFav(bookId,event=null){
+    if(event) event.stopPropagation();
+    try{
+        const res=await fetch('/api/books/favourite',{
+            method:'POST',
+            headers:{'Content-Type':'application/json'},
+            body:JSON.stringify({userId:'testUser123',bookId})
+        });
+        wishlist=await res.json();
+        fetchBooks();
+    }catch(err){console.error(err);}
 }
 </script>
 </body>
