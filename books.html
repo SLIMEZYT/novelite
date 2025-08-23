@@ -7,22 +7,10 @@
 <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
 <style>
 :root {
-    --royal-green:#006400; --gold:#FFD700; --white:#fff;
+    --royal-green:#006400; 
+    --gold:#FFD700; 
+    --white:#fff;
 }
-
-/* Loader */
-#loader {
-    position:fixed; top:0; left:0;width:100%; height:100%;
-    background:var(--royal-green); color:var(--white);
-    display:flex; flex-direction:column; justify-content:center; align-items:center;
-    z-index:100000;
-}
-.spinner {
-    border:6px solid rgba(255,255,255,0.3);
-    border-top:6px solid var(--gold); border-radius:50%; width:50px; height:50px;
-    animation:spin 1s linear infinite; margin-bottom:1rem;
-}
-@keyframes spin {100%{transform:rotate(360deg);}}
 
 /* Body & Hero */
 body {margin:0;padding:0;font-family:Arial,sans-serif;background:#f8f8f8;color:#000;}
@@ -96,16 +84,14 @@ section.visible{opacity:1; transform:translateY(0);}
 }
 
 /* Responsive */
-@media(max-width:500px){.books-grid{grid-template-columns:repeat(auto-fill,minmax(140px,1fr));} .hero h1{font-size:2rem;} .hero p{font-size:1rem;}}
+@media(max-width:500px){
+  .books-grid{grid-template-columns:repeat(auto-fill,minmax(140px,1fr));} 
+  .hero h1{font-size:2rem;} 
+  .hero p{font-size:1rem;}
+}
 </style>
 </head>
 <body>
-
-<!-- Loader -->
-<div id="loader">
-    <div class="spinner"></div>
-    <p>Loading Books...</p>
-</div>
 
 <!-- Hero -->
 <div class="hero">
@@ -143,106 +129,89 @@ section.visible{opacity:1; transform:translateY(0);}
     <a href="home.html" class="nav-btn"><span class="ico">👤</span><span>Profile</span></a>
 </nav>
 
-<script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
-<script>
-// Loader & section animation
-document.addEventListener('DOMContentLoaded',()=>{
-    setTimeout(()=>{document.getElementById('loader').style.display='none'; fetchBooks(); checkSections(); setActiveNav();},800);
-    window.addEventListener('scroll', checkSections);
-});
+<!-- Supabase SDK -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.56.0/dist/umd/supabase.min.js"></script>
 
-// Fade-in sections
-const sections = document.querySelectorAll('section');
-function checkSections(){
+<script>
+  // Initialize Supabase
+  const supabaseUrl = 'https://uadanawuwoaznvyqpfmz.supabase.co';
+  const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVhZGFuYXd1d29hem52eXFwZm16Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDkxMjM1MTUsImV4cCI6MjA2NDY5OTUxNX0.1fxx3005ziiMiy9CuMNzwIolEBBvknVMQgytRD4MHhQ';
+  const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+
+  // Scroll helper
+  function scrollToSection(id){document.getElementById(id).scrollIntoView({behavior:'smooth'});}
+  function setActiveNav(){
+    const navLinks = document.querySelectorAll('.bottom-nav .nav-btn');
+    const currentPath = window.location.pathname.split("/").pop();
+    navLinks.forEach(link=>{
+        if(link.getAttribute('href') === currentPath) link.classList.add('active');
+        else link.classList.remove('active');
+    });
+  }
+  document.addEventListener('DOMContentLoaded',()=>{setActiveNav(); fetchBooks(); window.addEventListener('scroll', checkSections);});
+
+  // Fade-in sections
+  const sections = document.querySelectorAll('section');
+  function checkSections(){
     const trigger = window.innerHeight * 0.85;
     sections.forEach(sec=>{if(sec.getBoundingClientRect().top<trigger) sec.classList.add('visible');});
-}
+  }
 
-// Scroll helper
-function scrollToSection(id){document.getElementById(id).scrollIntoView({behavior:'smooth'});}
+  // Book modal
+  const modal=document.getElementById('bookModal');
+  function openModal(book){
+      modal.style.display='flex';
+      document.getElementById('modalCover').src=book.cover||'https://via.placeholder.com/300x400';
+      document.getElementById('modalTitle').textContent=book.title;
+      document.getElementById('modalDesc').innerHTML=book.desc;
+      document.getElementById('modalAuthor').textContent=book.authorName;
+      const pdfBtn=document.getElementById('pdfBtn');
+      if(book.pdf){pdfBtn.href=book.pdf; pdfBtn.style.display='inline-block';}else{pdfBtn.style.display='none';}
+      document.getElementById('favBtn').onclick=()=>toggleFav(book.id);
+  }
+  function closeModal(){modal.style.display='none';}
 
-// Set active nav button
-function setActiveNav(){
-    const navLinks = document.querySelectorAll('.bottom-nav .nav-btn');
-    const currentPath = window.location.pathname;
-    navLinks.forEach(link=>{
-        if(link.getAttribute('href') === currentPath){
-            link.classList.add('active');
-        } else {
-            link.classList.remove('active');
-        }
-    });
-}
-
-// Books data
-let books = []; let wishlist = [];
-
-// Fetch books dynamically
-async function fetchBooks(){
+  // Favourite toggle
+  let wishlist = [];
+  async function toggleFav(bookId){
     try{
-        const res = await fetch('/api/stories');
-        books = await res.json();
+        const { data, error } = await supabase.from('favourites').upsert({user_id:'testUser123', book_id:bookId});
+        if(error) console.error(error);
+        fetchBooks();
+    }catch(e){console.error(e);}
+  }
 
-        const featured = books.filter(b=>b.featured);
-        const newArrivals = books.slice(-6);
-        const recommended = books.filter(b=>b.recommended);
-        const continueReading = books.filter(b=>b.progress>0);
-        const wishlistRes = await fetch('/api/books/wishlist?userId=testUser123');
-        wishlist = await wishlistRes.json();
-
-        renderBooks('featured-container',featured);
-        renderBooks('new-container',newArrivals);
-        renderBooks('rec-container',recommended);
-        renderBooks('continue-container',continueReading,true);
-        renderBooks('wishlist-container',books.filter(b=>wishlist.includes(b.id)));
+  // Fetch books
+  async function fetchBooks(){
+    try{
+      const { data:booksData, error } = await supabase.from('books').select('*');
+      if(error) {console.error(error); return;}
+      renderBooks('featured-container', booksData.filter(b=>b.featured));
+      renderBooks('new-container', booksData.slice(-6));
+      renderBooks('rec-container', booksData.filter(b=>b.recommended));
+      renderBooks('continue-container', booksData.filter(b=>b.progress>0), true);
+      renderBooks('wishlist-container', booksData.filter(b=>wishlist.includes(b.id)));
     }catch(err){console.error(err);}
-}
+  }
 
-// Render book cards
-function renderBooks(containerId,arr,showProgress=false){
+  // Render books
+  function renderBooks(containerId, arr, showProgress=false){
     const container=document.getElementById(containerId);
     container.innerHTML='';
     if(arr.length===0){container.innerHTML='<p>No books available</p>'; return;}
     arr.forEach(book=>{
-        const card=document.createElement('div'); card.className='book-card';
-        card.innerHTML=`<img src="${book.cover || 'https://via.placeholder.com/180x240'}" alt="cover">
+      const card=document.createElement('div'); card.className='book-card';
+      card.innerHTML=`<img src="${book.cover || 'https://via.placeholder.com/180x240'}" alt="cover">
         <h3>${book.title}</h3><p>${book.desc.replace(/<[^>]*>?/gm,'')}</p>
         <p class="author">${book.authorName}</p>
         <div class="fav-btn ${wishlist.includes(book.id)?'active':''}" onclick="toggleFav(${book.id},event)">★</div>
         ${book.pdf?`<a href="${book.pdf}" class="pdf-btn" target="_blank">Download PDF</a>`:''}
         ${showProgress?`<div class="progress-container"><div class="progress-bar" style="width:${book.progress}%"></div></div>`:''}`;
-        card.onclick=()=>openModal(book);
-        container.appendChild(card);
+      card.onclick=()=>openModal(book);
+      container.appendChild(card);
     });
-}
-
-// Modal
-const modal=document.getElementById('bookModal');
-function openModal(book){
-    modal.style.display='flex';
-    document.getElementById('modalCover').src=book.cover||'https://via.placeholder.com/300x400';
-    document.getElementById('modalTitle').textContent=book.title;
-    document.getElementById('modalDesc').innerHTML=book.desc;
-    document.getElementById('modalAuthor').textContent=book.authorName;
-    const pdfBtn=document.getElementById('pdfBtn');
-    if(book.pdf){pdfBtn.href=book.pdf; pdfBtn.style.display='inline-block';}else{pdfBtn.style.display='none';}
-    document.getElementById('favBtn').onclick=()=>toggleFav(book.id);
-}
-function closeModal(){modal.style.display='none';}
-
-// Toggle favourite
-async function toggleFav(bookId,event=null){
-    if(event) event.stopPropagation();
-    try{
-        const res=await fetch('/api/books/favourite',{
-            method:'POST',
-            headers:{'Content-Type':'application/json'},
-            body:JSON.stringify({userId:'testUser123',bookId})
-        });
-        wishlist=await res.json();
-        fetchBooks();
-    }catch(err){console.error(err);}
-}
+  }
 </script>
+
 </body>
 </html>
