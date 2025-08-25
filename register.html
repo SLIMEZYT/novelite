@@ -1,11 +1,69 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Register — Novelite</title>
-<meta name="description" content="Join Novelite today to read, write, and connect with amazing stories. Registration is simple, fast, and free.">
-<link rel="stylesheet" href="styles.css">
+<meta name="description" content="Join Novelite to read, write, and connect with amazing stories. Create your free account today.">
+<style>
+  :root{
+    --green:#014421;
+    --gold:#FFD700;
+    --white:#FFFFFF;
+    --ink: rgba(1,68,33,.08);
+    --glass: rgba(255,255,255,.08);
+    --glass-bd: rgba(255,215,0,.25);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:"Inter",system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--white);color:#111;min-height:100vh;overflow-x:hidden;display:flex;flex-direction:column;align-items:center;}
+
+  /* ===== LOADER ===== */
+  .loader{position:fixed;inset:0;background:var(--white);display:flex;align-items:center;justify-content:center;z-index:9999;}
+  .quill{width:72px;height:72px;position:relative;filter: drop-shadow(0 6px 18px rgba(0,0,0,.15));}
+  .quill:before{
+    content:"";
+    position:absolute; inset:0;
+    background:
+      radial-gradient(circle at 70% 30%, var(--gold) 0 10px, transparent 11px),
+      linear-gradient(135deg, var(--gold) 35%, #c9a200 36% 45%, var(--gold) 46%);
+    clip-path: polygon(30% 0, 100% 0, 70% 70%, 55% 100%, 45% 70%, 0 40%);
+    border-radius:8px;
+    animation: float 1.8s ease-in-out infinite;
+  }
+  .ink-ring{
+    position:absolute;width:120px;height:120px;border-radius:50%;
+    border:4px solid var(--ink);animation: ripple 1.8s ease-out infinite;
+  }
+  @keyframes float{50%{transform: translateY(-6px) rotate(-2deg)}}
+  @keyframes ripple{from{transform:scale(.7); opacity:1} to{transform:scale(1.2); opacity:0}}
+
+  /* ===== FORM ===== */
+  .form-container{background:#fff; padding:40px; border-radius:16px; box-shadow:0 10px 30px rgba(0,0,0,.1); max-width:400px; width:90%; margin-top:120px;}
+  h1{text-align:center; color:var(--green); margin-bottom:20px;}
+  input, button{width:100%; padding:12px; margin:8px 0; border-radius:8px; border:1px solid #ccc;}
+  button{background:var(--green); color:#fff; border:none; cursor:pointer; font-weight:600;}
+  button:hover{background:#016633;}
+
+  /* ===== QUOTE ===== */
+  .quote{margin:20px 0; padding:18px; background:linear-gradient(180deg, #fff, #f9fbfa); border:1px solid rgba(1,68,33,.12); border-radius:16px; text-align:center;}
+  .quote .txt{font-style:italic;color:#222;}
+  .quote .who{margin-top:8px;color:#555;font-size:14px;}
+
+  /* ===== BOTTOM NAV ===== */
+  .bottom-nav{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);
+    width:min(560px,92%); display:flex; justify-content:space-between; align-items:center; gap:8px;
+    padding:10px 12px; border-radius:22px;
+    background: var(--glass); backdrop-filter: blur(12px) saturate(150%);
+    border:1px solid var(--glass-bd);
+    box-shadow: 0 10px 30px rgba(0,0,0,.15);
+    z-index:9000;}
+  .nav-btn{flex:1; display:flex; flex-direction:column; align-items:center; gap:6px;
+    padding:8px 6px; border-radius:14px; cursor:pointer; text-decoration:none; font-size:12px; font-weight:600; color:#0f0f0f; position:relative; overflow:hidden;}
+  .nav-btn .ico{font-size:18px;}
+  .nav-btn:hover{background:rgba(255,255,255,.25);}
+  .nav-btn.active{background:rgba(255,215,0,.25); border:1px solid var(--glass-bd);}
+  .nav-btn.active .ico, .nav-btn.active span{color:var(--green);}
+</style>
 </head>
 <body>
 
@@ -15,56 +73,87 @@
   <div class="quill"></div>
 </div>
 
-<section class="registration">
-  <h1>Join Novelite</h1>
-  <p>Start reading and sharing stories today.</p>
-  
-  <form id="registerForm">
-    <input type="text" id="name" placeholder="Full Name" required>
-    <input type="email" id="email" placeholder="Email" required>
-    <input type="password" id="password" placeholder="Password" required>
-    <select id="ageGroup" multiple>
-      <option value="child">Child</option>
-      <option value="teen">Teen</option>
-      <option value="adult">Adult</option>
-    </select>
-    <select id="genres" multiple>
-      <option value="fiction">Fiction</option>
-      <option value="non-fiction">Non-Fiction</option>
-      <option value="romance">Romance</option>
-      <option value="fantasy">Fantasy</option>
-      <option value="poetry">Poetry</option>
-    </select>
+<!-- QUOTE -->
+<div class="quote" id="quoteBox">
+  <div class="txt" id="qTxt">Loading inspirational quote…</div>
+  <div class="who" id="qWho"></div>
+</div>
+
+<!-- REGISTRATION FORM -->
+<div class="form-container">
+  <h1>Create Account</h1>
+  <form name="register" method="POST" netlify>
+    <input type="hidden" name="form-name" value="register">
+    <input type="text" name="name" placeholder="Full Name" required />
+    <input type="email" name="email" placeholder="Email" required />
+    <input type="password" name="password" placeholder="Password" required />
     <button type="submit">Register</button>
   </form>
-</section>
+</div>
 
-<script type="module">
-import { neon } from '@netlify/neon';
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav" aria-label="Primary">
+  <a class="nav-btn active" href="index.html"><div class="ico">🏠</div><span>Home</span></a>
+  <a class="nav-btn" href="books.html"><div class="ico">📖</div><span>Books</span></a>
+  <a class="nav-btn" href="write.html"><div class="ico">✍️</div><span>Write</span></a>
+  <a class="nav-btn" href="blog.html"><div class="ico">📰</div><span>Blog</span></a>
+  <a class="nav-btn" href="#" id="navProfile"><div class="ico">👤</div><span>Profile</span></a>
+</nav>
 
-const sql = neon();
+<script>
+  // LOADER
+  window.addEventListener('load',()=> {
+    const loader = document.getElementById('loader');
+    loader.style.opacity='0';
+    setTimeout(()=> loader.style.display='none', 250);
+  });
 
-window.addEventListener('load', () => {
-  document.getElementById('loader').style.display = 'none';
-});
+  // QUOTE OF THE DAY
+  (function(){
+    const QUOTES = [
+      {t:"Stories are the threads that stitch our souls together.", a:"Novelite"},
+      {t:"A blank page is just a door. Open it.", a:"Novelite"},
+      {t:"Read to remember. Write to be remembered.", a:"Novelite"},
+      {t:"Ink is courage in motion.", a:"Novelite"},
+      {t:"Every chapter you finish writes a new you.", a:"Novelite"}
+    ];
+    const boxTxt = document.getElementById('qTxt');
+    const boxWho = document.getElementById('qWho');
+    const key = 'novelite_qod_v1';
+    const today = new Date(); today.setHours(0,0,0,0);
+    const stamp = today.getTime();
+    let saved = null;
+    try{ saved = JSON.parse(localStorage.getItem(key)); } catch(e){}
+    if(saved && saved.day === stamp){
+      boxTxt.textContent = saved.q.t;
+      boxWho.textContent = '— ' + saved.q.a;
+    } else {
+      const idx = Math.floor((stamp/86400000) % QUOTES.length);
+      const q = QUOTES[idx];
+      boxTxt.textContent = q.t;
+      boxWho.textContent = '— ' + q.a;
+      localStorage.setItem(key, JSON.stringify({day: stamp, q}));
+    }
+  })();
 
-document.getElementById('registerForm').addEventListener('submit', async e => {
-  e.preventDefault();
-  
-  const name = document.getElementById('name').value;
-  const email = document.getElementById('email').value;
-  const password = document.getElementById('password').value;
-  const ageGroup = Array.from(document.getElementById('ageGroup').selectedOptions).map(o=>o.value);
-  const genres = Array.from(document.getElementById('genres').selectedOptions).map(o=>o.value);
-  
-  try {
-    await sql`INSERT INTO users (name, email, password, age_group, genres) VALUES (${name}, ${email}, ${password}, ${ageGroup}, ${genres})`;
-    alert('Registration successful!');
-    window.location.href = 'books.html';
-  } catch (err) {
-    alert('Error: ' + err.message);
-  }
-});
+  // NAV ripple
+  document.querySelectorAll('.nav-btn').forEach(btn=>{
+    btn.addEventListener('click', function(e){
+      const rect = this.getBoundingClientRect();
+      const x = e.clientX - rect.left, y = e.clientY - rect.top;
+      const pulse = document.createElement('span');
+      pulse.style.cssText = `position:absolute; left:${x-4}px; top:${y-4}px; width:8px; height:8px; border-radius:999px; background:rgba(255,215,0,.7); transform:scale(0); opacity:.9; pointer-events:none; transition: transform .45s ease, opacity .6s ease;`;
+      this.appendChild(pulse);
+      requestAnimationFrame(()=>{ pulse.style.transform='scale(18)'; pulse.style.opacity='0'; });
+      setTimeout(()=> pulse.remove(),600);
+    });
+  });
+
+  // PROFILE CLICK REDIRECT
+  document.getElementById('navProfile').addEventListener('click',()=>{
+    alert('Please log in first!');
+  });
 </script>
+
 </body>
 </html>
