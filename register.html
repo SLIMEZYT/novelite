@@ -1,155 +1,70 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Novelite | Register</title>
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js" defer></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Register — Novelite</title>
+<meta name="description" content="Join Novelite today to read, write, and connect with amazing stories. Registration is simple, fast, and free.">
+<link rel="stylesheet" href="styles.css">
 </head>
-<body class="bg-gray-100 font-sans">
+<body>
 
-  <!-- Registration Container -->
-  <div class="flex items-center justify-center min-h-screen p-4">
-    <div class="bg-white shadow-2xl rounded-2xl w-full max-w-3xl p-8" x-data="registerForm()">
-      <h2 class="text-3xl font-bold text-center text-purple-700 mb-6">Join Novelite</h2>
-      <p class="text-center text-gray-500 mb-8">Register as a Reader or Writer and begin your journey 🚀</p>
+<!-- LOADER -->
+<div class="loader" id="loader">
+  <div class="ink-ring"></div>
+  <div class="quill"></div>
+</div>
 
-      <!-- Form Start -->
-      <form @submit.prevent="showPreview">
+<section class="registration">
+  <h1>Join Novelite</h1>
+  <p>Start reading and sharing stories today.</p>
+  
+  <form id="registerForm">
+    <input type="text" id="name" placeholder="Full Name" required>
+    <input type="email" id="email" placeholder="Email" required>
+    <input type="password" id="password" placeholder="Password" required>
+    <select id="ageGroup" multiple>
+      <option value="child">Child</option>
+      <option value="teen">Teen</option>
+      <option value="adult">Adult</option>
+    </select>
+    <select id="genres" multiple>
+      <option value="fiction">Fiction</option>
+      <option value="non-fiction">Non-Fiction</option>
+      <option value="romance">Romance</option>
+      <option value="fantasy">Fantasy</option>
+      <option value="poetry">Poetry</option>
+    </select>
+    <button type="submit">Register</button>
+  </form>
+</section>
 
-        <!-- Personal Info -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <label class="block mb-2 font-semibold">Full Name</label>
-            <input type="text" x-model="form.name" class="w-full border p-3 rounded-lg" placeholder="John Doe" required>
-          </div>
-          <div>
-            <label class="block mb-2 font-semibold">Email</label>
-            <input type="email" x-model="form.email" class="w-full border p-3 rounded-lg" placeholder="you@example.com" required>
-          </div>
-        </div>
+<script type="module">
+import { neon } from '@netlify/neon';
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-          <div>
-            <label class="block mb-2 font-semibold">Password</label>
-            <input type="password" x-model="form.password" class="w-full border p-3 rounded-lg" required>
-          </div>
-          <div>
-            <label class="block mb-2 font-semibold">Confirm Password</label>
-            <input type="password" x-model="form.confirmPassword" class="w-full border p-3 rounded-lg" required>
-          </div>
-        </div>
+const sql = neon();
 
-        <!-- Role -->
-        <div class="mt-6">
-          <label class="block mb-2 font-semibold">I am a:</label>
-          <div class="flex space-x-6">
-            <label class="flex items-center space-x-2">
-              <input type="radio" name="role" value="Reader" x-model="form.role" required>
-              <span>Reader</span>
-            </label>
-            <label class="flex items-center space-x-2">
-              <input type="radio" name="role" value="Writer" x-model="form.role">
-              <span>Writer</span>
-            </label>
-          </div>
-        </div>
+window.addEventListener('load', () => {
+  document.getElementById('loader').style.display = 'none';
+});
 
-        <!-- Genres -->
-        <div class="mt-6">
-          <label class="block mb-2 font-semibold">Preferred Genres</label>
-          <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
-            <label><input type="checkbox" value="Fantasy" x-model="form.genres"> Fantasy</label>
-            <label><input type="checkbox" value="Romance" x-model="form.genres"> Romance</label>
-            <label><input type="checkbox" value="Sci-Fi" x-model="form.genres"> Sci-Fi</label>
-            <label><input type="checkbox" value="Thriller" x-model="form.genres"> Thriller</label>
-            <label><input type="checkbox" value="Non-Fiction" x-model="form.genres"> Non-Fiction</label>
-            <label><input type="checkbox" value="Poetry" x-model="form.genres"> Poetry</label>
-          </div>
-        </div>
-
-        <!-- Profile Picture -->
-        <div class="mt-6">
-          <label class="block mb-2 font-semibold">Profile Picture</label>
-          <input type="file" @change="previewImage" class="w-full border p-3 rounded-lg" accept="image/*">
-          <template x-if="form.photoPreview">
-            <img :src="form.photoPreview" alt="Preview" class="mt-3 w-24 h-24 rounded-full object-cover border">
-          </template>
-        </div>
-
-        <!-- How did you hear -->
-        <div class="mt-6">
-          <label class="block mb-2 font-semibold">How did you hear about Novelite?</label>
-          <select x-model="form.referral" class="w-full border p-3 rounded-lg">
-            <option value="">Select...</option>
-            <option value="Social Media">Social Media</option>
-            <option value="Friend">Friend</option>
-            <option value="Advertisement">Advertisement</option>
-            <option value="Other">Other</option>
-          </select>
-        </div>
-
-        <!-- Submit -->
-        <div class="mt-8 text-center">
-          <button type="submit" class="bg-purple-700 text-white px-8 py-3 rounded-xl hover:bg-purple-800 transition">Preview & Submit</button>
-        </div>
-      </form>
-
-      <!-- Preview Modal -->
-      <div x-show="preview" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-        <div class="bg-white rounded-2xl shadow-xl w-full max-w-lg p-6 relative">
-          <h3 class="text-2xl font-bold text-purple-700 mb-4">Review Your Details</h3>
-          <ul class="space-y-3 text-gray-700">
-            <li><strong>Name:</strong> <span x-text="form.name"></span></li>
-            <li><strong>Email:</strong> <span x-text="form.email"></span></li>
-            <li><strong>Role:</strong> <span x-text="form.role"></span></li>
-            <li><strong>Genres:</strong> <span x-text="form.genres.join(', ')"></span></li>
-            <li><strong>Referral:</strong> <span x-text="form.referral"></span></li>
-            <li><strong>Photo:</strong> <span x-text="form.photo ? form.photo.name : 'Not uploaded'"></span></li>
-          </ul>
-
-          <div class="flex justify-between mt-6">
-            <button @click="preview=false" class="px-6 py-2 rounded-lg bg-gray-300 hover:bg-gray-400">Edit</button>
-            <button @click="finalSubmit" class="px-6 py-2 rounded-lg bg-purple-700 text-white hover:bg-purple-800">Confirm & Submit</button>
-          </div>
-        </div>
-      </div>
-
-    </div>
-  </div>
-
-  <script>
-    function registerForm() {
-      return {
-        form: {
-          name: '',
-          email: '',
-          password: '',
-          confirmPassword: '',
-          role: '',
-          genres: [],
-          photo: null,
-          photoPreview: null,
-          referral: ''
-        },
-        preview: false,
-        showPreview() {
-          this.preview = true;
-        },
-        previewImage(event) {
-          const file = event.target.files[0];
-          if (file) {
-            this.form.photo = file;
-            this.form.photoPreview = URL.createObjectURL(file);
-          }
-        },
-        finalSubmit() {
-          alert('🎉 Registration Successful!');
-          this.preview = false;
-        }
-      }
-    }
-  </script>
+document.getElementById('registerForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  
+  const name = document.getElementById('name').value;
+  const email = document.getElementById('email').value;
+  const password = document.getElementById('password').value;
+  const ageGroup = Array.from(document.getElementById('ageGroup').selectedOptions).map(o=>o.value);
+  const genres = Array.from(document.getElementById('genres').selectedOptions).map(o=>o.value);
+  
+  try {
+    await sql`INSERT INTO users (name, email, password, age_group, genres) VALUES (${name}, ${email}, ${password}, ${ageGroup}, ${genres})`;
+    alert('Registration successful!');
+    window.location.href = 'books.html';
+  } catch (err) {
+    alert('Error: ' + err.message);
+  }
+});
+</script>
 </body>
 </html>

@@ -1,0 +1,39 @@
+// File: functions/register.js
+import { neon } from '@netlify/neon';
+import bcrypt from 'bcryptjs';
+
+export async function handler(event) {
+  if (event.httpMethod !== 'POST') {
+    return { statusCode: 405, body: JSON.stringify({ error: 'Method Not Allowed' }) };
+  }
+
+  try {
+    const { name, email, password } = JSON.parse(event.body || '{}');
+
+    if (!name || !email || !password) {
+      return { statusCode: 400, body: JSON.stringify({ error: 'Name, email, and password are required' }) };
+    }
+
+    // Hash password
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Connect to Netlify Neon (Postgres)
+    const sql = neon();
+
+    // Insert user
+    const result = await sql`
+      INSERT INTO users (name, email, password)
+      VALUES (${name}, ${email}, ${hashedPassword})
+      RETURNING id, name, email;
+    `;
+
+    return {
+      statusCode: 200,
+      body: JSON.stringify({ message: 'Registration successful', user: result[0] })
+    };
+
+  } catch (error) {
+    console.error(error);
+    return { statusCode: 500, body: JSON.stringify({ error: 'Server error', details: error.message }) };
+  }
+}
