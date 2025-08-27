@@ -6,66 +6,130 @@
 <title>Register — Novelite</title>
 <meta name="description" content="Join Novelite to read, write, and connect with amazing stories. Create your free account today.">
 <style>
-  :root{
-    --green:#014421;
-    --gold:#FFD700;
-    --white:#FFFFFF;
-    --ink: rgba(1,68,33,.08);
-    --glass: rgba(255,255,255,.08);
-    --glass-bd: rgba(255,215,0,.25);
-  }
-  *{box-sizing:border-box;margin:0;padding:0}
-  body{font-family:"Inter",system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--white);color:#111;min-height:100vh;overflow-x:hidden;display:flex;flex-direction:column;align-items:center;}
+:root{
+  --green:#014421;
+  --gold:#FFD700;
+  --white:#FFFFFF;
+  --ink: rgba(1,68,33,.08);
+  --glass: rgba(255,255,255,.08);
+  --glass-bd: rgba(255,215,0,.25);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:"Inter",system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+  background:var(--white);
+  color:#111;
+  min-height:100vh;
+  overflow-x:hidden;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  position:relative;
+}
 
-  /* ===== LOADER ===== */
-  .loader{position:fixed;inset:0;background:var(--white);display:flex;align-items:center;justify-content:center;z-index:9999;}
-  .quill{width:72px;height:72px;position:relative;filter: drop-shadow(0 6px 18px rgba(0,0,0,.15));}
-  .quill:before{
-    content:"";
-    position:absolute; inset:0;
-    background:
-      radial-gradient(circle at 70% 30%, var(--gold) 0 10px, transparent 11px),
-      linear-gradient(135deg, var(--gold) 35%, #c9a200 36% 45%, var(--gold) 46%);
-    clip-path: polygon(30% 0, 100% 0, 70% 70%, 55% 100%, 45% 70%, 0 40%);
-    border-radius:8px;
-    animation: float 1.8s ease-in-out infinite;
-  }
-  .ink-ring{
-    position:absolute;width:120px;height:120px;border-radius:50%;
-    border:4px solid var(--ink);animation: ripple 1.8s ease-out infinite;
-  }
-  @keyframes float{50%{transform: translateY(-6px) rotate(-2deg)}}
-  @keyframes ripple{from{transform:scale(.7); opacity:1} to{transform:scale(1.2); opacity:0}}
+/* ===== LIVE BACKGROUND ===== */
+#liveBg{
+  position:fixed;
+  inset:0;
+  z-index:0;
+  overflow:hidden;
+  pointer-events:none;
+}
+#liveBg span{
+  position:absolute;
+  color:rgba(0,0,0,.08);
+  user-select:none;
+  white-space:nowrap;
+  animation-name:floatBooks;
+  animation-iteration-count:infinite;
+  animation-timing-function:linear;
+}
+@keyframes floatBooks{
+  0%{transform:translateY(100vh) rotate(0deg);}
+  100%{transform:translateY(-10vh) rotate(360deg);}
+}
 
-  /* ===== FORM ===== */
-  .form-container{background:#fff; padding:40px; border-radius:16px; box-shadow:0 10px 30px rgba(0,0,0,.1); max-width:400px; width:90%; margin-top:120px;}
-  h1{text-align:center; color:var(--green); margin-bottom:20px;}
-  input, button{width:100%; padding:12px; margin:8px 0; border-radius:8px; border:1px solid #ccc;}
-  button{background:var(--green); color:#fff; border:none; cursor:pointer; font-weight:600;}
-  button:hover{background:#016633;}
+/* ===== LOADER ===== */
+.loader{
+  position:fixed;inset:0;
+  background:var(--white);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:9999;
+}
+.quill{
+  width:72px;height:72px;
+  position:relative;
+  filter: drop-shadow(0 6px 18px rgba(0,0,0,.15));
+}
+.quill:before{
+  content:"";
+  position:absolute; inset:0;
+  background:
+    radial-gradient(circle at 70% 30%, var(--gold) 0 10px, transparent 11px),
+    linear-gradient(135deg, var(--gold) 35%, #c9a200 36% 45%, var(--gold) 46%);
+  clip-path: polygon(30% 0, 100% 0, 70% 70%, 55% 100%, 45% 70%, 0 40%);
+  border-radius:8px;
+  animation: float 1.8s ease-in-out infinite;
+}
+.ink-ring{
+  position:absolute;width:120px;height:120px;border-radius:50%;
+  border:4px solid var(--ink);animation: ripple 1.8s ease-out infinite;
+}
+@keyframes float{50%{transform: translateY(-6px) rotate(-2deg)}}
+@keyframes ripple{from{transform:scale(.7); opacity:1} to{transform:scale(1.2); opacity:0}}
 
-  /* ===== QUOTE ===== */
-  .quote{margin:20px 0; padding:18px; background:linear-gradient(180deg, #fff, #f9fbfa); border:1px solid rgba(1,68,33,.12); border-radius:16px; text-align:center;}
-  .quote .txt{font-style:italic;color:#222;}
-  .quote .who{margin-top:8px;color:#555;font-size:14px;}
+/* ===== FORM ===== */
+.form-container{
+  background:#fff; padding:40px; border-radius:16px; box-shadow:0 10px 30px rgba(0,0,0,.1); 
+  max-width:400px; width:90%; margin-top:80px; z-index:2;
+  position:relative;
+}
+h1{text-align:center; color:var(--green); margin-bottom:20px;}
+input, button, select{width:100%; padding:12px; margin:8px 0; border-radius:8px; border:1px solid #ccc;}
+button{background:var(--green); color:#fff; border:none; cursor:pointer; font-weight:600;}
+button:hover{background:#016633;}
 
-  /* ===== BOTTOM NAV ===== */
-  .bottom-nav{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);
-    width:min(560px,92%); display:flex; justify-content:space-between; align-items:center; gap:8px;
-    padding:10px 12px; border-radius:22px;
-    background: var(--glass); backdrop-filter: blur(12px) saturate(150%);
-    border:1px solid var(--glass-bd);
-    box-shadow: 0 10px 30px rgba(0,0,0,.15);
-    z-index:9000;}
-  .nav-btn{flex:1; display:flex; flex-direction:column; align-items:center; gap:6px;
-    padding:8px 6px; border-radius:14px; cursor:pointer; text-decoration:none; font-size:12px; font-weight:600; color:#0f0f0f; position:relative; overflow:hidden;}
-  .nav-btn .ico{font-size:18px;}
-  .nav-btn:hover{background:rgba(255,255,255,.25);}
-  .nav-btn.active{background:rgba(255,215,0,.25); border:1px solid var(--glass-bd);}
-  .nav-btn.active .ico, .nav-btn.active span{color:var(--green);}
+/* ===== QUOTE ===== */
+.quote{margin:20px 0; padding:18px; background:linear-gradient(180deg, #fff, #f0f2f0); border:1px solid rgba(1,68,33,.12); border-radius:16px; text-align:center; z-index:2; position:relative;}
+.quote .txt{font-style:italic;color:#222;}
+.quote .who{margin-top:8px;color:#555;font-size:14px;}
+
+/* ===== BOTTOM NAV ===== */
+.bottom-nav{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);
+  width:min(560px,92%); display:flex; justify-content:space-between; align-items:center; gap:8px;
+  padding:10px 12px; border-radius:22px;
+  background: var(--glass); backdrop-filter: blur(12px) saturate(150%);
+  border:1px solid var(--glass-bd);
+  box-shadow: 0 10px 30px rgba(0,0,0,.15);
+  z-index:2;}
+.nav-btn{flex:1; display:flex; flex-direction:column; align-items:center; gap:6px;
+  padding:8px 6px; border-radius:14px; cursor:pointer; text-decoration:none; font-size:12px; font-weight:600; color:#0f0f0f; position:relative; overflow:hidden;}
+.nav-btn .ico{font-size:18px;}
+.nav-btn:hover{background:rgba(255,255,255,.25);}
+.nav-btn.active{background:rgba(255,215,0,.25); border:1px solid var(--glass-bd);}
+.nav-btn.active .ico, .nav-btn.active span{color:var(--green);}
+
+/* ===== MODAL STEPS ===== */
+.modal-bg{
+  position:fixed; inset:0; background:rgba(0,0,0,.6); display:flex; justify-content:center; align-items:center; z-index:9998;
+}
+.modal-content{
+  background:#fff; padding:30px; border-radius:16px; max-width:400px; width:90%; position:relative;
+  z-index:3;
+}
+.step{display:none; flex-direction:column;}
+.step.active{display:flex;}
+.step h2{margin-bottom:12px; color:var(--green); text-align:center;}
+.progress-bar-container{height:6px; background:#eee; border-radius:4px; overflow:hidden; margin-bottom:16px;}
+.progress-bar{height:6px; background:var(--gold); width:0%; transition:width .3s;}
+.step button{margin-top:12px;}
 </style>
 </head>
 <body>
+
+<div id="liveBg"></div>
 
 <!-- LOADER -->
 <div class="loader" id="loader">
@@ -79,16 +143,46 @@
   <div class="who" id="qWho"></div>
 </div>
 
-<!-- REGISTRATION FORM -->
-<div class="form-container">
-  <h1>Create Account</h1>
-  <form name="register" method="POST" netlify>
-    <input type="hidden" name="form-name" value="register">
-    <input type="text" name="name" placeholder="Full Name" required />
-    <input type="email" name="email" placeholder="Email" required />
-    <input type="password" name="password" placeholder="Password" required />
-    <button type="submit">Register</button>
-  </form>
+<!-- STEP-BY-STEP MODAL -->
+<div class="modal-bg" id="regModal">
+  <div class="modal-content">
+    <div class="progress-bar-container">
+      <div class="progress-bar" id="progressBar"></div>
+    </div>
+    <!-- Step 1: Reader or Writer -->
+    <div class="step active" id="step1">
+      <h2>Choose Your Path</h2>
+      <button data-role="reader">Reader</button>
+      <button data-role="writer">Writer</button>
+    </div>
+    <!-- Step 2: Personal Info -->
+    <div class="step" id="step2">
+      <h2>Personal Info</h2>
+      <input type="text" name="name" placeholder="Full Name" required>
+      <input type="email" name="email" placeholder="Email" required>
+      <input type="password" name="password" placeholder="Password" required>
+      <select name="gender" required>
+        <option value="">Select Gender</option>
+        <option>Male</option><option>Female</option><option>Other</option>
+      </select>
+      <div class="field">
+        <label>Favorite Genres (multi-select)</label>
+        <select name="genres" multiple size="4">
+          <option>Fiction</option><option>Non-fiction</option><option>Poetry</option>
+          <option>Science</option><option>Fantasy</option><option>Romance</option><option>Thriller</option>
+        </select>
+      </div>
+    </div>
+    <!-- Step 3: Profile Picture & Submit -->
+    <div class="step" id="step3">
+      <h2>Profile Picture</h2>
+      <label for="cover_image">Upload Profile Picture</label>
+      <input type="file" name="cover_image" id="cover_image" accept="image/*">
+      <input type="hidden" name="country" id="country">
+      <input type="hidden" name="language" id="language">
+      <button id="submitForm" style="background:var(--gold); color:#111;">Submit</button>
+    </div>
+  </div>
 </div>
 
 <!-- BOTTOM NAV -->
@@ -103,12 +197,10 @@
 <script>
   // LOADER
   window.addEventListener('load',()=> {
-    const loader = document.getElementById('loader');
-    loader.style.opacity='0';
-    setTimeout(()=> loader.style.display='none', 250);
+    document.getElementById('loader').style.display='none';
   });
 
-  // QUOTE OF THE DAY
+  // QUOTES
   (function(){
     const QUOTES = [
       {t:"Stories are the threads that stitch our souls together.", a:"Novelite"},
@@ -148,10 +240,68 @@
       setTimeout(()=> pulse.remove(),600);
     });
   });
+  document.getElementById('navProfile').addEventListener('click',()=>{ alert('Please log in first!'); });
 
-  // PROFILE CLICK REDIRECT
-  document.getElementById('navProfile').addEventListener('click',()=>{
-    alert('Please log in first!');
+  // LANGUAGE & COUNTRY
+  const lang = navigator.language || navigator.userLanguage || 'en-US';
+  const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';
+  document.getElementById('language').value = lang;
+  document.getElementById('country').value = timezone;
+
+  // LIVE BOOK BACKGROUND
+  const liveBg = document.getElementById('liveBg');
+  for(let i=0;i<25;i++){
+    const span = document.createElement('span');
+    span.textContent = "📖✍️";
+    span.style.left = Math.random()*100 + "vw";
+    span.style.fontSize = 12+Math.random()*20+"px";
+    span.style.animationDuration = 10+Math.random()*10+"s";
+    span.style.animationDelay = Math.random()*5+"s";
+    liveBg.appendChild(span);
+  }
+
+  // STEP-BY-STEP MODAL
+  const steps = document.querySelectorAll('.step');
+  const progressBar = document.getElementById('progressBar');
+  let currentStep=0;
+  function showStep(idx){
+    steps.forEach((s,i)=> s.classList.toggle('active',i===idx));
+    progressBar.style.width=((idx)/(steps.length-1))*100+'%';
+  }
+
+  // Step1: role selection
+  document.querySelectorAll('#step1 button').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      document.body.setAttribute('data-role', btn.dataset.role);
+      currentStep=1; showStep(currentStep);
+    });
+  });
+
+  // Step2: personal info next
+  steps[1].insertAdjacentHTML('beforeend','<button id="nextStep2">Next</button>');
+  document.getElementById('nextStep2').addEventListener('click', ()=>{
+    currentStep=2; showStep(currentStep);
+  });
+
+  // Step3: submit
+  document.getElementById('submitForm').addEventListener('click', ()=>{
+    const form = document.createElement('form');
+    form.name='register';
+    form.method='POST';
+    form.enctype='multipart/form-data';
+    form.setAttribute('data-netlify','true');
+
+    document.querySelectorAll('#step2 input, #step2 select, #step3 input').forEach(el=>{
+      if(el.name) form.appendChild(el.cloneNode(true));
+    });
+
+    document.body.appendChild(form);
+    form.submit();
+
+    setTimeout(()=>{
+      alert('Welcome to Novelite! Your account has been created.');
+      window.location.href = 'home.html';
+    },500);
   });
 </script>
 
