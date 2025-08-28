@@ -6,122 +6,76 @@
 <title>Register — Novelite</title>
 <meta name="description" content="Join Novelite to read, write, and connect with amazing stories. Create your free account today.">
 <style>
-:root{
-  --green:#014421;
-  --gold:#FFD700;
-  --white:#FFFFFF;
-  --ink: rgba(1,68,33,.08);
-  --glass: rgba(255,255,255,.08);
-  --glass-bd: rgba(255,215,0,.25);
-}
-*{box-sizing:border-box;margin:0;padding:0;}
-body{
-  font-family:"Inter",system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-  background:var(--white);
-  color:#111;
-  min-height:100vh;
-  overflow-x:hidden;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-}
-/* ===== LIVE SHOOTING STARS BACKGROUND ===== */
-#liveBg{
-  position:fixed; inset:0;
-  z-index:-1;
-  overflow:hidden;
-  background: linear-gradient(180deg, #001a33 0%, #004466 100%);
-}
-.star{
-  position:absolute;
-  width:2px;
-  height:2px;
-  background:white;
-  border-radius:50%;
-  opacity:0.9;
-  animation: starMove linear infinite;
-}
-@keyframes starMove{
-  0% { transform: translateY(100vh) translateX(0);}
-  100% { transform: translateY(-100vh) translateX(30px);}
-}
+  :root{
+    --green:#014421;
+    --gold:#FFD700;
+    --white:#FFFFFF;
+    --ink: rgba(1,68,33,.08);
+    --glass: rgba(255,255,255,.08);
+    --glass-bd: rgba(255,215,0,.25);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:"Inter",system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--white);color:#111;min-height:100vh;overflow-x:hidden;display:flex;flex-direction:column;align-items:center;position:relative;}
+  
+  /* ===== LOADER ===== */
+  .loader{position:fixed;inset:0;background:var(--white);display:flex;align-items:center;justify-content:center;z-index:9999;}
+  .quill{width:72px;height:72px;position:relative;filter: drop-shadow(0 6px 18px rgba(0,0,0,.15));}
+  .quill:before{
+    content:"";
+    position:absolute; inset:0;
+    background:
+      radial-gradient(circle at 70% 30%, var(--gold) 0 10px, transparent 11px),
+      linear-gradient(135deg, var(--gold) 35%, #c9a200 36% 45%, var(--gold) 46%);
+    clip-path: polygon(30% 0, 100% 0, 70% 70%, 55% 100%, 45% 70%, 0 40%);
+    border-radius:8px;
+    animation: float 1.8s ease-in-out infinite;
+  }
+  .ink-ring{
+    position:absolute;width:120px;height:120px;border-radius:50%;
+    border:4px solid var(--ink);animation: ripple 1.8s ease-out infinite;
+  }
+  @keyframes float{50%{transform: translateY(-6px) rotate(-2deg)}}
+  @keyframes ripple{from{transform:scale(.7); opacity:1} to{transform:scale(1.2); opacity:0}}
 
-/* ===== LOADER ===== */
-.loader{
-  position:fixed; inset:0;
-  background:var(--white);
-  display:flex; align-items:center; justify-content:center;
-  z-index:9999;
-}
-.quill{
-  width:72px;height:72px;position:relative;
-  filter: drop-shadow(0 6px 18px rgba(0,0,0,.15));
-}
-.quill:before{
-  content:"";
-  position:absolute; inset:0;
-  background:
-    radial-gradient(circle at 70% 30%, var(--gold) 0 10px, transparent 11px),
-    linear-gradient(135deg, var(--gold) 35%, #c9a200 36% 45%, var(--gold) 46%);
-  clip-path: polygon(30% 0, 100% 0, 70% 70%, 55% 100%, 45% 70%, 0 40%);
-  border-radius:8px;
-  animation: float 1.8s ease-in-out infinite;
-}
-.ink-ring{
-  position:absolute;width:120px;height:120px;border-radius:50%;
-  border:4px solid var(--ink);animation: ripple 1.8s ease-out infinite;
-}
-@keyframes float{50%{transform: translateY(-6px) rotate(-2deg)}}
-@keyframes ripple{from{transform:scale(.7); opacity:1} to{transform:scale(1.2); opacity:0}}
+  /* ===== FORM ===== */
+  .form-container{background:#fff; padding:40px; border-radius:16px; box-shadow:0 10px 30px rgba(0,0,0,.1); max-width:400px; width:90%; margin-top:80px; position:relative; z-index:10;}
+  h1{text-align:center; color:var(--green); margin-bottom:20px;}
+  input, button, select{width:100%; padding:12px; margin:8px 0; border-radius:8px; border:1px solid #ccc;}
+  button{background:var(--green); color:#fff; border:none; cursor:pointer; font-weight:600;}
+  button:hover{background:#016633;}
+  #nextBtn, #submitBtn{width:auto; padding:10px 20px; margin-top:16px;}
 
-/* ===== FORM ===== */
-.form-container{
-  background:#fff;
-  padding:40px;
-  border-radius:16px;
-  box-shadow:0 10px 30px rgba(0,0,0,.1);
-  max-width:400px;
-  width:90%;
-  margin:120px auto 0;
-  position:relative;
-  padding-bottom:140px; /* space for bottom nav */
-}
-h1{text-align:center; color:var(--green); margin-bottom:20px;}
-input, select, button{
-  width:100%; padding:12px; margin:8px 0; border-radius:8px; border:1px solid #ccc;
-}
-button{
-  background:var(--green); color:#fff; border:none; cursor:pointer; font-weight:600;
-}
-button:hover{background:#016633;}
-.step{display:none;}
-.step.active{display:block;}
-.progress-bar{width:100%; height:6px; background:rgba(0,0,0,.1); border-radius:4px; margin-bottom:20px;}
-.progress{height:100%; background:var(--green); width:0%; border-radius:4px; transition:width .3s;}
+  /* ===== STEPS ===== */
+  .step{display:none;}
+  .step.active{display:block;}
+  .progress-container{width:100%; height:8px; background:#eee; border-radius:4px; margin-bottom:20px; overflow:hidden;}
+  .progress-bar{width:0%; height:100%; background:var(--green); transition:.3s ease;}
 
-/* ===== QUOTE ===== */
-.quote{margin:20px 0; padding:18px; background:linear-gradient(180deg, #fff, #f9fbfa); border:1px solid rgba(1,68,33,.12); border-radius:16px; text-align:center;}
-.quote .txt{font-style:italic;color:#222;}
-.quote .who{margin-top:8px;color:#555;font-size:14px;}
+  /* ===== QUOTE ===== */
+  .quote{margin:20px 0; padding:18px; background:linear-gradient(180deg, #fff, #f9fbfa); border:1px solid rgba(1,68,33,.12); border-radius:16px; text-align:center; position:relative; z-index:10;}
+  .quote .txt{font-style:italic;color:#222;}
+  .quote .who{margin-top:8px;color:#555;font-size:14px;}
 
-/* ===== BOTTOM NAV ===== */
-.bottom-nav{
-  position:fixed; left:50%; bottom:18px; transform:translateX(-50%);
-  width:min(560px,92%); display:flex; justify-content:space-between; align-items:center; gap:8px;
-  padding:10px 12px; border-radius:22px;
-  background: var(--glass); backdrop-filter: blur(12px) saturate(150%);
-  border:1px solid var(--glass-bd);
-  box-shadow: 0 10px 30px rgba(0,0,0,.15);
-  z-index:9000;
-}
-.nav-btn{
-  flex:1; display:flex; flex-direction:column; align-items:center; gap:6px;
-  padding:8px 6px; border-radius:14px; cursor:pointer; text-decoration:none; font-size:12px; font-weight:600; color:#0f0f0f; position:relative; overflow:hidden;
-}
-.nav-btn .ico{font-size:18px;}
-.nav-btn:hover{background:rgba(255,255,255,.25);}
-.nav-btn.active{background:rgba(255,215,0,.25); border:1px solid var(--glass-bd);}
-.nav-btn.active .ico, .nav-btn.active span{color:var(--green);}
+  /* ===== BOTTOM NAV ===== */
+  .bottom-nav{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);
+    width:min(560px,92%); display:flex; justify-content:space-between; align-items:center; gap:8px;
+    padding:10px 12px; border-radius:22px;
+    background: var(--glass); backdrop-filter: blur(12px) saturate(150%);
+    border:1px solid var(--glass-bd);
+    box-shadow: 0 10px 30px rgba(0,0,0,.15);
+    z-index:9000;}
+  .nav-btn{flex:1; display:flex; flex-direction:column; align-items:center; gap:6px;
+    padding:8px 6px; border-radius:14px; cursor:pointer; text-decoration:none; font-size:12px; font-weight:600; color:#0f0f0f; position:relative; overflow:hidden;}
+  .nav-btn .ico{font-size:18px;}
+  .nav-btn:hover{background:rgba(255,255,255,.25);}
+  .nav-btn.active{background:rgba(255,215,0,.25); border:1px solid var(--glass-bd);}
+  .nav-btn.active .ico, .nav-btn.active span{color:var(--green);}
+
+  /* ===== LIVE BACKGROUND ===== */
+  #liveBg{position:fixed; inset:0; background:#001; overflow:hidden; z-index:1;}
+  .star{position:absolute; width:2px; height:2px; background:white; border-radius:50%; opacity:0.8; animation:starMove linear infinite;}
+  @keyframes starMove{0%{transform:translateX(0)}100%{transform:translateX(100vw)}}
+
 </style>
 </head>
 <body>
@@ -143,56 +97,49 @@ button:hover{background:#016633;}
 <!-- REGISTRATION FORM -->
 <div class="form-container">
   <h1>Create Account</h1>
-  <div class="progress-bar"><div class="progress" id="progress"></div></div>
+  <div class="progress-container"><div class="progress-bar" id="progressBar"></div></div>
 
-  <form name="register" method="POST" netlify id="registerForm">
+  <form id="registerForm" name="register" method="POST" netlify>
     <input type="hidden" name="form-name" value="register">
-    <input type="hidden" name="language" id="language">
     <input type="hidden" name="country" id="country">
+    <input type="hidden" name="language" id="language">
 
-    <!-- STEP 1: ROLE -->
+    <!-- STEP 1: ROLE SELECTION -->
     <div class="step active" id="step1">
-      <label>Select Role</label>
       <select name="role" id="roleSelect" required>
-        <option value="">Choose role</option>
+        <option value="">Select Role</option>
         <option value="reader">Reader</option>
         <option value="writer">Writer</option>
       </select>
     </div>
 
-    <!-- STEP 2: ROLE SPECIFIC -->
+    <!-- STEP 2: READER FORM -->
     <div class="step" id="step2-reader">
-      <input type="text" name="reader_name" placeholder="Full Name" required/>
-      <input type="email" name="reader_email" placeholder="Email" required/>
-      <input type="password" name="reader_password" placeholder="Password" required/>
-      <select name="reader_age_group" required>
-        <option value="">Select Age Group</option>
-        <option>Under 18</option>
-        <option>18-24</option>
-        <option>25-34</option>
-        <option>35-50</option>
-        <option>50+</option>
-      </select>
+      <input type="text" name="name" placeholder="Full Name" required>
+      <input type="email" name="email" placeholder="Email" required>
+      <input type="password" name="password" placeholder="Password" required>
+      <input type="text" name="age_group" placeholder="Age Group" required>
     </div>
+
+    <!-- STEP 2: WRITER FORM -->
     <div class="step" id="step2-writer">
-      <input type="text" name="writer_name" placeholder="Full Name" required/>
-      <input type="email" name="writer_email" placeholder="Email" required/>
-      <input type="password" name="writer_password" placeholder="Password" required/>
-      <select name="writer_age_group" required>
-        <option value="">Select Age Group</option>
-        <option>Under 18</option>
-        <option>18-24</option>
-        <option>25-34</option>
-        <option>35-50</option>
-        <option>50+</option>
+      <input type="text" name="name" placeholder="Full Name" required>
+      <input type="email" name="email" placeholder="Email" required>
+      <input type="password" name="password" placeholder="Password" required>
+      <input type="text" name="age_group" placeholder="Age Group" required>
+      <div class="field"><label>Profile Picture <input type="file" name="cover_image" accept="image/*"></label></div>
+    </div>
+
+    <!-- STEP 3 -->
+    <div class="step" id="step3">
+      <label>Favorite Genres (multi-select)</label>
+      <select name="genres" multiple size="4" required>
+        <option>Fiction</option><option>Non-fiction</option><option>Poetry</option>
+        <option>Science</option><option>Fantasy</option><option>Romance</option><option>Thriller</option>
       </select>
     </div>
 
-    <!-- STEP 3: PROFILE PIC -->
-    <div class="step" id="step3">
-      <label>Profile Picture <input type="file" name="profile_pic" accept="image/*" required></label>
-    </div>
-
+    <button type="button" id="nextBtn">Next</button>
     <button type="submit" id="submitBtn" style="display:none;">Submit</button>
   </form>
 </div>
@@ -207,97 +154,113 @@ button:hover{background:#016633;}
 </nav>
 
 <script>
-// LOADER
-window.addEventListener('load',()=> document.getElementById('loader').style.display='none');
-
-// QUOTE OF THE DAY
-(function(){
-  const QUOTES = [
-    {t:"Stories are the threads that stitch our souls together.", a:"Novelite"},
-    {t:"A blank page is just a door. Open it.", a:"Novelite"},
-    {t:"Read to remember. Write to be remembered.", a:"Novelite"},
-    {t:"Ink is courage in motion.", a:"Novelite"},
-    {t:"Every chapter you finish writes a new you.", a:"Novelite"}
-  ];
-  const boxTxt = document.getElementById('qTxt');
-  const boxWho = document.getElementById('qWho');
-  const key = 'novelite_qod_v1';
-  const today = new Date(); today.setHours(0,0,0,0);
-  const stamp = today.getTime();
-  let saved = null;
-  try{ saved = JSON.parse(localStorage.getItem(key)); } catch(e){}
-  if(saved && saved.day===stamp){
-    boxTxt.textContent = saved.q.t;
-    boxWho.textContent='— '+saved.q.a;
-  } else {
-    const idx=Math.floor((stamp/86400000)%QUOTES.length);
-    const q=QUOTES[idx];
-    boxTxt.textContent=q.t;
-    boxWho.textContent='— '+q.a;
-    localStorage.setItem(key,JSON.stringify({day:stamp,q}));
-  }
-})();
-
-// NAV ripple
-document.querySelectorAll('.nav-btn').forEach(btn=>{
-  btn.addEventListener('click',function(e){
-    const rect=this.getBoundingClientRect();
-    const x=e.clientX-rect.left, y=e.clientY-rect.top;
-    const pulse=document.createElement('span');
-    pulse.style.cssText=`position:absolute; left:${x-4}px; top:${y-4}px; width:8px; height:8px; border-radius:999px; background:rgba(255,215,0,.7); transform:scale(0); opacity:.9; pointer-events:none; transition: transform .45s ease, opacity .6s ease;`;
-    this.appendChild(pulse);
-    requestAnimationFrame(()=>{pulse.style.transform='scale(18)'; pulse.style.opacity='0';});
-    setTimeout(()=>pulse.remove(),600);
+  // LOADER
+  window.addEventListener('load',()=> {
+    const loader = document.getElementById('loader');
+    loader.style.opacity='0';
+    setTimeout(()=> loader.style.display='none', 250);
   });
-});
-document.getElementById('navProfile').addEventListener('click',()=>{alert('Please log in first!');});
 
-// Auto-detect language & country (timezone)
-document.getElementById('language').value=navigator.language||'en-US';
-document.getElementById('country').value=Intl.DateTimeFormat().resolvedOptions().timeZone||'UTC';
+  // QUOTE OF THE DAY
+  (function(){
+    const QUOTES = [
+      {t:"Stories are the threads that stitch our souls together.", a:"Novelite"},
+      {t:"A blank page is just a door. Open it.", a:"Novelite"},
+      {t:"Read to remember. Write to be remembered.", a:"Novelite"},
+      {t:"Ink is courage in motion.", a:"Novelite"},
+      {t:"Every chapter you finish writes a new you.", a:"Novelite"}
+    ];
+    const boxTxt = document.getElementById('qTxt');
+    const boxWho = document.getElementById('qWho');
+    const key = 'novelite_qod_v1';
+    const today = new Date(); today.setHours(0,0,0,0);
+    const stamp = today.getTime();
+    let saved = null;
+    try{ saved = JSON.parse(localStorage.getItem(key)); } catch(e){}
+    if(saved && saved.day === stamp){
+      boxTxt.textContent = saved.q.t;
+      boxWho.textContent = '— ' + saved.q.a;
+    } else {
+      const idx = Math.floor((stamp/86400000) % QUOTES.length);
+      const q = QUOTES[idx];
+      boxTxt.textContent = q.t;
+      boxWho.textContent = '— ' + q.a;
+      localStorage.setItem(key, JSON.stringify({day: stamp, q}));
+    }
+  })();
 
-// LIVE SHOOTING STARS
-const liveBg=document.getElementById('liveBg');
-for(let i=0;i<50;i++){
-  const star=document.createElement('div');
-  star.className='star';
-  star.style.left=Math.random()*100+'vw';
-  star.style.top=Math.random()*100+'vh';
-  star.style.animationDuration=5+Math.random()*5+'s';
-  star.style.width=1+Math.random()*3+'px';
-  star.style.height=1+Math.random()*3+'px';
-  liveBg.appendChild(star);
-}
+  // NAV ripple
+  document.querySelectorAll('.nav-btn').forEach(btn=>{
+    btn.addEventListener('click', function(e){
+      const rect = this.getBoundingClientRect();
+      const x = e.clientX - rect.left, y = e.clientY - rect.top;
+      const pulse = document.createElement('span');
+      pulse.style.cssText = `position:absolute; left:${x-4}px; top:${y-4}px; width:8px; height:8px; border-radius:999px; background:rgba(255,215,0,.7); transform:scale(0); opacity:.9; pointer-events:none; transition: transform .45s ease, opacity .6s ease;`;
+      this.appendChild(pulse);
+      requestAnimationFrame(()=>{ pulse.style.transform='scale(18)'; pulse.style.opacity='0'; });
+      setTimeout(()=> pulse.remove(),600);
+    });
+  });
 
-// MULTI-STEP FORM HANDLING
-const roleSelect=document.getElementById('roleSelect');
-const step2Reader=document.getElementById('step2-reader');
-const step2Writer=document.getElementById('step2-writer');
-const step3=document.getElementById('step3');
-const submitBtn=document.getElementById('submitBtn');
-const progress=document.getElementById('progress');
+  // PROFILE CLICK REDIRECT
+  document.getElementById('navProfile').addEventListener('click',()=>{ alert('Please log in first!'); });
 
-roleSelect.addEventListener('change',()=>{
-  if(!roleSelect.value) return;
-  // hide step1, show step2 depending on role
-  document.getElementById('step1').classList.remove('active');
-  if(roleSelect.value==='reader'){step2Reader.classList.add('active'); step2Writer.classList.remove('active');}
-  else{step2Writer.classList.add('active'); step2Reader.classList.remove('active');}
-  step3.classList.add('active'); // profile pic always visible
-  progress.style.width='100%';
-  submitBtn.style.display='block';
-});
+  // Auto-detect language & country (timezone)
+  document.getElementById('language').value = navigator.language || navigator.userLanguage || 'en-US';
+  document.getElementById('country').value = Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';
 
-// FORM SUBMISSION
-document.getElementById('registerForm').addEventListener('submit',e=>{
-  // validate required
-  const inputs = e.target.querySelectorAll('input[required], select[required]');
-  for(const inp of inputs) if(!inp.value){inp.reportValidity(); e.preventDefault(); return;}
-  // redirect after 3s
-  e.preventDefault();
-  submitBtn.textContent='Submitting…';
-  setTimeout(()=>{window.location.href='home.html'; alert('Welcome! Login module opened.');},3000);
-});
+  // SHOOTING STARS BACKGROUND
+  const liveBg = document.getElementById('liveBg');
+  for(let i=0;i<50;i++){
+    const star = document.createElement('div');
+    star.className='star';
+    star.style.top = Math.random()*100+'vh';
+    star.style.left = Math.random()*100+'vw';
+    star.style.width = 1+Math.random()*2+'px';
+    star.style.height = star.style.width;
+    star.style.animationDuration = 5+Math.random()*5+'s';
+    liveBg.appendChild(star);
+  }
+
+  // STEP-BY-STEP LOGIC
+  let currentStep = 1;
+  const totalSteps = 3;
+  const nextBtn = document.getElementById('nextBtn');
+  const submitBtn = document.getElementById('submitBtn');
+  const progressBar = document.getElementById('progressBar');
+  const roleSelect = document.getElementById('roleSelect');
+
+  function showStep(step){
+    document.querySelectorAll('.step').forEach(s=>s.classList.remove('active'));
+    if(step===1) document.getElementById('step1').classList.add('active');
+    else if(step===2){
+      if(roleSelect.value==='reader') document.getElementById('step2-reader').classList.add('active');
+      else document.getElementById('step2-writer').classList.add('active');
+    }
+    else if(step===3) document.getElementById('step3').classList.add('active');
+
+    progressBar.style.width = ((step-1)/(totalSteps-1))*100+'%';
+    nextBtn.style.display = (step < totalSteps) ? 'inline-block' : 'none';
+    submitBtn.style.display = (step===totalSteps) ? 'inline-block' : 'none';
+  }
+
+  nextBtn.addEventListener('click', ()=>{
+    if(currentStep===1 && !roleSelect.value){ roleSelect.reportValidity(); return; }
+    const activeInputs = document.querySelectorAll('.step.active input[required], .step.active select[required]');
+    for(const inp of activeInputs) if(!inp.value){ inp.reportValidity(); return; }
+
+    currentStep++;
+    showStep(currentStep);
+  });
+
+  document.getElementById('registerForm').addEventListener('submit', e=>{
+    e.preventDefault();
+    // You can add redirect after 3s
+    alert('Welcome to Novelite! Redirecting...');
+    setTimeout(()=>{ window.location.href='home.html'; },3000);
+  });
+
+  showStep(currentStep);
 </script>
 
 </body>
