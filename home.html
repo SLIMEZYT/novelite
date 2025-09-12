@@ -1,420 +1,130 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Novelite — Read. Write. Connect.</title>
-<style>
-  /* ============ DESIGN TOKENS ============ */
-  :root{
-    --green:#014421;        /* Royal Green */
-    --gold:#FFD700;         /* Gold */
-    --white:#FFFFFF;
-    --ink: rgba(1,68,33,.08);
-    --glass: rgba(255,255,255,.08);
-    --glass-bd: rgba(255,215,0,.25);
-  }
-  *{box-sizing:border-box; margin:0; padding:0}
-  body{
-    font-family: "Inter", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-    background: var(--white);
-    color:#111;
-    min-height:100vh;
-    overflow-x:hidden;
-  }
-
-  /* ============ QUILL LOADER ============ */
-  .loader{
-    position:fixed; inset:0; background:var(--white);
-    display:flex; align-items:center; justify-content:center; z-index:9999;
-  }
-  .quill{
-    width:72px; height:72px; position:relative;
-    filter: drop-shadow(0 6px 18px rgba(0,0,0,.15));
-  }
-  .quill:before{
-    content:"";
-    position:absolute; inset:0;
-    background:
-      radial-gradient(circle at 70% 30%, var(--gold) 0 10px, transparent 11px),
-      linear-gradient(135deg, var(--gold) 35%, #c9a200 36% 45%, var(--gold) 46%);
-    clip-path: polygon(30% 0, 100% 0, 70% 70%, 55% 100%, 45% 70%, 0 40%);
-    border-radius:8px;
-    animation: float 1.8s ease-in-out infinite;
-  }
-  .ink-ring{
-    position:absolute; width:120px; height:120px; border-radius:50%;
-    border:4px solid var(--ink); animation: ripple 1.8s ease-out infinite;
-  }
-  @keyframes float{50%{transform: translateY(-6px) rotate(-2deg)}}
-  @keyframes ripple{from{transform:scale(.7); opacity:1} to{transform:scale(1.2); opacity:0}}
-
-  /* ============ HERO ============ */
-  header.hero{
-    padding:80px 22px 40px;
-    text-align:center;
-    background:
-      radial-gradient(1200px 400px at 50% -10%, rgba(1,68,33,.08), transparent 60%),
-      linear-gradient(0deg, transparent, transparent 60%, rgba(1,68,33,.03));
-  }
-  .brand{
-    display:flex; align-items:center; justify-content:center; gap:10px; margin-bottom:14px;
-  }
-  .brand .mark{
-    width:28px; height:28px; border-radius:50%; background:var(--gold);
-    box-shadow:0 6px 16px rgba(0,0,0,.15);
-    position:relative;
-  }
-  .brand .mark:after{
-    content:""; position:absolute; inset:4px 6px 6px 10px; background:#c9a200; border-radius:6px; transform:skewX(-15deg);
-  }
-  h1{font-size: clamp(28px, 5vw, 42px); line-height:1.15; color:var(--green);}
-  .tag{margin-top:10px; color:#333}
-  .cta-row{margin-top:22px; display:flex; gap:12px; justify-content:center; flex-wrap:wrap}
-  .btn{
-    padding:12px 18px; border-radius:12px; border:1px solid var(--green);
-    font-weight:600; cursor:pointer; transition:.25s; background:var(--green); color:var(--white);
-  }
-  .btn.alt{
-    background:var(--gold); color:#1e1e1e; border-color: #c9a200;
-  }
-  .btn:hover{transform: translateY(-2px); box-shadow:0 8px 20px rgba(1,68,33,.18)}
-  .btn.alt:hover{box-shadow:0 8px 20px rgba(255,215,0,.25)}
-
-  /* ============ COUNTDOWN ============ */
-  .countdown{
-    margin:28px auto 8px; padding:14px 16px; max-width:680px;
-    background: #f7f9f8; border:1px dashed var(--green); border-radius:14px;
-  }
-  .cd-title{font-weight:700; color:var(--green); margin-bottom:8px}
-  .cd-grid{
-    display:grid; grid-template-columns:repeat(4, minmax(80px,1fr)); gap:10px;
-  }
-  .cd-box{
-    background:#fff; border:1px solid rgba(1,68,33,.2); border-radius:12px; padding:10px;
-    text-align:center;
-  }
-  .cd-num{font-size:22px; font-weight:800; color:var(--green)}
-  .cd-label{font-size:12px; color:#444}
-
-  /* ============ SECTIONS ============ */
-  section{padding:32px 20px; max-width:1100px; margin:0 auto}
-  .section-title{
-    color:var(--green); font-size: clamp(22px, 2.8vw, 28px); margin-bottom:14px; position:relative;
-  }
-  .section-title:after{
-    content:""; display:block; width:64px; height:4px; background:var(--gold); border-radius:2px; margin-top:6px;
-  }
-
-  /* Featured Books */
-  .cards{display:grid; grid-template-columns:repeat(auto-fit, minmax(200px,1fr)); gap:14px}
-  .card{
-    background:#fff; border:1px solid rgba(1,68,33,.12); border-radius:16px; overflow:hidden;
-    box-shadow:0 6px 14px rgba(0,0,0,.06); transition:.25s; position:relative;
-  }
-  .card:hover{transform: translateY(-4px)}
-  .cover{aspect-ratio: 3/4; background:#eee}
-  .card .meta{padding:12px}
-  .card .title{font-weight:700; color:#222}
-  .card .by{font-size:12px; color:#666; margin-top:4px}
-  .chip{
-    position:absolute; top:12px; left:12px; background:var(--gold); color:#1a1a1a;
-    padding:6px 10px; font-size:12px; border-radius:999px; border:1px solid #c9a200;
-  }
-
-  /* Quote of the Day */
-  .quote{
-    background:linear-gradient(180deg, #fff, #f9fbfa);
-    border:1px solid rgba(1,68,33,.12); border-radius:16px; padding:18px; display:flex; gap:12px; align-items:flex-start;
-  }
-  .quote-mark{font-size:28px; color:var(--gold)}
-  .quote .txt{color:#222}
-  .quote .who{margin-top:8px; color:#555; font-size:14px}
-
-  /* ============ BOTTOM LIQUID GLASS NAV ============ */
-  .bottom-nav{
-    position:fixed; left:50%; bottom:18px; transform:translateX(-50%);
-    width: min(560px, 92%); display:flex; justify-content:space-between; align-items:center; gap:8px;
-    padding:10px 12px; border-radius:22px;
-    background: var(--glass); backdrop-filter: blur(12px) saturate(150%);
-    border:1px solid var(--glass-bd);
-    box-shadow: 0 10px 30px rgba(0,0,0,.15);
-    z-index:9000; animation: floatbar 4s ease-in-out infinite;
-  }
-  @keyframes floatbar{50%{transform:translateX(-50%) translateY(-3px)}}
-  .nav-btn{
-    flex:1; display:flex; flex-direction:column; align-items:center; gap:6px;
-    padding:8px 6px; border-radius:14px; cursor:pointer; user-select:none;
-    color:#0f0f0f; text-decoration:none; font-size:12px; font-weight:600;
-    transition:.2s;
-  }
-  .nav-btn .ico{font-size:18px}
-  .nav-btn:hover{background:rgba(255,255,255,.25)}
-  .nav-btn.active{background:rgba(255,215,0,.25); border:1px solid var(--glass-bd)}
-  .nav-btn.active .ico, .nav-btn.active span{color:var(--green)}
-
-  /* Ripple click effect */
-  .nav-btn{position:relative; overflow:hidden}
-  .nav-btn:after{
-    content:""; position:absolute; width:8px; height:8px; background:rgba(255,215,0,.6); border-radius:50%;
-    transform:scale(0); opacity:0; pointer-events:none;
-  }
-
-  /* ============ LOGIN MODAL (frontend only) ============ */
-  .modal{position:fixed; inset:0; display:none; align-items:center; justify-content:center; z-index:10000; background:rgba(0,0,0,.4)}
-  .modal.show{display:flex}
-  .modal-card{
-    width:min(92%,380px); background:#fff; border-radius:16px; padding:20px;
-    border:1px solid rgba(1,68,33,.15); box-shadow:0 20px 50px rgba(0,0,0,.2);
-    animation: pop .2s ease;
-  }
-  @keyframes pop{from{transform:scale(.96); opacity:0} to{transform:scale(1); opacity:1}}
-  .modal-card h3{color:var(--green); margin-bottom:8px}
-  .field{display:flex; flex-direction:column; gap:6px; margin:10px 0}
-  .field input{
-    padding:12px 12px; border-radius:12px; border:1px solid #dcdcdc; outline:none;
-  }
-  .row{display:flex; justify-content:space-between; align-items:center; gap:10px; margin-top:8px}
-  .close-x{background:none; border:none; font-size:20px; cursor:pointer; color:#666}
-  .full-btn{width:100%; margin-top:10px}
-
-  /* Responsive tweaks */
-  @media (min-width:960px){
-    header.hero{padding-top:96px}
-    .cd-grid{gap:16px}
-  }
-</style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Novelite — Read. Write. Connect.</title>
+  <meta name="description" content="Novelite is a premium home for readers and writers. Discover stories, track progress with XP & Gems, and connect with a creative community." />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='32' fill='%23FFD700'/%3E%3Cpath d='M20 44l8-24 16-4-8 24-16 4z' fill='%23014421'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="home.css">
 </head>
 <body>
-
-<!-- LOADER -->
-<div class="loader" id="loader">
-  <div class="ink-ring"></div>
-  <div class="quill"></div>
-</div>
-
-<!-- HERO -->
-<header class="hero">
-  <div class="brand">
-    <div class="mark" aria-hidden="true"></div>
-    <strong style="letter-spacing:.5px;color:#222;font-size:14px">NOVELITE</strong>
-  </div>
-  <h1>Read. Write. Connect.</h1>
-  <p class="tag">A premium home for writers & book lovers — crafted with simplicity and taste.</p>
-
-  <!-- COUNTDOWN: set your launch date here -->
-  <div class="countdown" id="countdown" data-target="2025-12-01T12:00:00+01:00">
-    <div class="cd-title">Launching in:</div>
-    <div class="cd-grid">
-      <div class="cd-box"><div class="cd-num" id="dd">0</div><div class="cd-label">Days</div></div>
-      <div class="cd-box"><div class="cd-num" id="hh">0</div><div class="cd-label">Hours</div></div>
-      <div class="cd-box"><div class="cd-num" id="mm">0</div><div class="cd-label">Minutes</div></div>
-      <div class="cd-box"><div class="cd-num" id="ss">0</div><div class="cd-label">Seconds</div></div>
+  <!-- Loader -->
+  <div class="loader-wrap" id="loaderWrap" aria-hidden="false">
+    <div class="loader-inner">
+      <div class="logo-bubble"><div class="logo-mark">N</div></div>
+      <div class="loader-text">Novelite</div>
     </div>
   </div>
 
-  <div class="cta-row">
-    <button class="btn" id="openLogin">Login</button>
-    <a class="btn alt" href="register.html">Create Account</a>
-  </div>
-</header>
-
-<!-- FEATURED BOOKS -->
-<section aria-labelledby="feat">
-  <h2 id="feat" class="section-title">Featured Books</h2>
-  <div class="cards">
-    <article class="card">
-      <div class="cover" style="background:url('https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?q=80&w=900&auto=format&fit=crop') center/cover"></div>
-      <span class="chip">Editor's Pick</span>
-      <div class="meta">
-        <div class="title">The Emerald Chronicle</div>
-        <div class="by">by A. Writer</div>
-      </div>
-    </article>
-    <article class="card">
-      <div class="cover" style="background:url('https://images.unsplash.com/photo-1495446815901-a7297e633e8d?q=80&w=900&auto=format&fit=crop') center/cover"></div>
-      <div class="meta">
-        <div class="title">Golden Threads</div>
-        <div class="by">by B. Author</div>
-      </div>
-    </article>
-    <article class="card">
-      <div class="cover" style="background:url('https://images.unsplash.com/photo-1455885666463-9f0f02b1a8f8?q=80&w=900&auto=format&fit=crop') center/cover"></div>
-      <div class="meta">
-        <div class="title">White Noise & Ink</div>
-        <div class="by">by C. Poet</div>
-      </div>
-    </article>
-  </div>
-</section>
-
-<!-- QUOTE OF THE DAY (stable for 24h) -->
-<section aria-labelledby="qod">
-  <h2 id="qod" class="section-title">Quote of the Day</h2>
-  <div class="quote" id="quoteBox">
-    <div class="quote-mark">“</div>
-    <div>
-      <div class="txt" id="qTxt">Loading…</div>
-      <div class="who" id="qWho"></div>
-    </div>
-  </div>
-</section>
-
-<!-- BOTTOM LIQUID GLASS NAV -->
-<nav class="bottom-nav" aria-label="Primary">
-  <a class="nav-btn active" href="index.html"><div class="ico">🏠</div><span>Home</span></a>
-  <a class="nav-btn" href="books.html"><div class="ico">📖</div><span>Books</span></a>
-  <a class="nav-btn" href="write.html"><div class="ico">✍️</div><span>Write</span></a>
-  <a class="nav-btn" href="blog.html"><div class="ico">📰</div><span>Blog</span></a>
-  <a class="nav-btn" href="#" id="navProfile"><div class="ico">👤</div><span>Profile</span></a>
-</nav>
-
-<!-- LOGIN MODAL -->
-<div class="modal" id="loginModal" aria-hidden="true">
-  <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="loginTitle">
+  <!-- Topbar -->
+  <div class="topbar">
     <div class="row">
-      <h3 id="loginTitle">Login to Novelite</h3>
-      <button class="close-x" id="closeLogin" aria-label="Close">✕</button>
-    </div>
-    <div class="field">
-      <label for="lgEmail" style="font-size:12px;color:#444">Email</label>
-      <input id="lgEmail" type="email" placeholder="you@example.com" required>
-    </div>
-    <div class="field">
-      <label for="lgPass" style="font-size:12px;color:#444">Password</label>
-      <input id="lgPass" type="password" placeholder="••••••••" required>
-    </div>
-    <button class="btn full-btn" id="doLogin">Login</button>
-    <div class="row" style="margin-top:10px">
-      <a href="register.html" style="color:var(--green); font-weight:600; text-decoration:none">Create account</a>
-      <a href="#" style="color:#666; font-size:12px; text-decoration:none" onclick="alert('Forgot password flow comes with backend.');return false;">Forgot password?</a>
+      <div class="brand"><div class="mark">N</div><div class="brand-text">NOVELITE</div></div>
+      <div class="actions">
+        <button class="btn alt" id="kidsBtn">Kids</button>
+        <button class="icon-btn" id="openNoti">🔔<span class="badge" id="notiBadge">0</span></button>
+        <button class="icon-btn" id="openProfile">👤</button>
+      </div>
     </div>
   </div>
-</div>
 
-<script>
-/* ======= LOADER ======= */
-window.addEventListener('load',()=> {
-  const loader = document.getElementById('loader');
-  loader.style.opacity = '0';
-  setTimeout(()=> loader.style.display='none', 250);
-});
+  <main>
+    <!-- Hero -->
+    <header class="hero" id="mainContent" style="opacity:0;transform:translateY(8px);">
+      <h1>Read. Write. Connect.</h1>
+      <p class="tag">A premium home for writers & book lovers — crafted with simplicity and taste.</p>
 
-/* ======= COUNTDOWN (FIXED TARGET) ======= 
-   - Does NOT reset on refresh because it uses an absolute timestamp.
-   - Set your target in the HTML data attribute (Africa/Lagos used here: +01:00).
-*/
-(function(){
-  const wrap = document.getElementById('countdown');
-  const targetStr = wrap?.getAttribute('data-target') || '2025-12-01T12:00:00+01:00';
-  const target = new Date(targetStr).getTime();
-  const dd=document.getElementById('dd'), hh=document.getElementById('hh'),
-        mm=document.getElementById('mm'), ss=document.getElementById('ss');
+      <div class="cta-row">
+        <button class="btn" id="openLogin">Login</button>
+        <button class="btn alt" id="openSignup">Create Account</button>
+      </div>
 
-  function tick(){
-    const now = Date.now();
-    let diff = target - now;
-    if (diff <= 0){
-      dd.textContent = hh.textContent = mm.textContent = ss.textContent = '0';
-      wrap.querySelector('.cd-title').textContent = 'We are live!';
-      clearInterval(t);
-      return;
-    }
-    const d = Math.floor(diff/86400000); diff %= 86400000;
-    const h = Math.floor(diff/3600000);  diff %= 3600000;
-    const m = Math.floor(diff/60000);    diff %= 60000;
-    const s = Math.floor(diff/1000);
-    dd.textContent = d; hh.textContent = h; mm.textContent = m; ss.textContent = s;
-  }
-  tick(); const t=setInterval(tick, 1000);
-})();
+      <div class="quote" aria-live="polite">
+        <div class="quote-mark">“</div>
+        <div class="quote-body">
+          <div id="qTxt">Loading…</div>
+          <div id="qWho" class="quote-author"></div>
+        </div>
+      </div>
 
-/* ======= QUOTE OF THE DAY (stable for 24h; no refresh shuffle) ======= */
-(function(){
-  const QUOTES = [
-    {t:"Stories are the threads that stitch our souls together.", a:"Novelite"},
-    {t:"A blank page is just a door. Open it.", a:"Novelite"},
-    {t:"Read to remember. Write to be remembered.", a:"Novelite"},
-    {t:"Ink is courage in motion.", a:"Novelite"},
-    {t:"Every chapter you finish writes a new you.", a:"Novelite"}
-  ];
-  const boxTxt = document.getElementById('qTxt');
-  const boxWho = document.getElementById('qWho');
+      <!-- Editors Pick Carousel -->
+      <div class="carousel-wrap" id="editorsCarouselWrap">
+        <div class="carousel-window">
+          <div class="carousel-track" id="carouselTrack"></div>
+        </div>
+        <button class="carousel-arrow left" id="carouselPrev" aria-label="Previous">◀</button>
+        <button class="carousel-arrow right" id="carouselNext" aria-label="Next">▶</button>
+      </div>
+    </header>
 
-  const key = 'novelite_qod_v1';
-  const today = new Date(); today.setHours(0,0,0,0);
-  const stamp = today.getTime();
+    <!-- Most Read -->
+    <section>
+      <h2 class="section-title">Most Read</h2>
+      <div class="cards" id="mostRead"></div>
+      <div id="emptyState" class="empty" style="display:none">
+        <div class="emoji">🥺🪶</div>
+        <div>No books as of yet. Check back soon!</div>
+      </div>
+    </section>
+  </main>
 
-  let saved = null;
-  try { saved = JSON.parse(localStorage.getItem(key)); } catch(e){}
-  if (saved && saved.day === stamp){
-    boxTxt.textContent = saved.q.t;
-    boxWho.textContent = '— ' + saved.q.a;
-  } else {
-    const idx = Math.floor((stamp/86400000) % QUOTES.length); // deterministic per day
-    const q = QUOTES[idx];
-    boxTxt.textContent = q.t;
-    boxWho.textContent = '— ' + q.a;
-    localStorage.setItem(key, JSON.stringify({day: stamp, q}));
-  }
-})();
+  <!-- Bottom Nav -->
+  <nav class="bottom-nav" aria-label="Primary">
+    <a class="nav-btn active" id="navHome"><div class="ico">🏠</div><span>Home</span></a>
+    <a class="nav-btn" id="navBooks"><div class="ico">📖</div><span>Books</span></a>
+    <a class="nav-btn" id="navWrite"><div class="ico">✍️</div><span>Write</span></a>
+    <a class="nav-btn" id="navBlog"><div class="ico">📰</div><span>Blog</span></a>
+    <a class="nav-btn" id="navProfileBtn"><div class="ico">👤</div><span>Profile</span></a>
+  </nav>
 
-/* ======= LOGIN MODAL (frontend only) ======= */
-const loginModal = document.getElementById('loginModal');
-const openLoginBtn = document.getElementById('openLogin');
-const closeLoginBtn = document.getElementById('closeLogin');
-const doLoginBtn = document.getElementById('doLogin');
-const navProfile = document.getElementById('navProfile');
+  <footer class="site-footer">© Novelite 2025</footer>
 
-function openLogin(){ loginModal.classList.add('show'); }
-function closeLogin(){ loginModal.classList.remove('show'); }
-openLoginBtn?.addEventListener('click', openLogin);
-closeLoginBtn?.addEventListener('click', closeLogin);
-loginModal.addEventListener('click', e=>{ if(e.target===loginModal) closeLogin(); });
+  <!-- Notifications Modal -->
+  <div class="modal" id="notiModal">
+    <div class="modal-card">
+      <div class="modal-row"><h3>Notifications</h3><button class="close-x" data-close="notiModal">✕</button></div>
+      <div id="notiList" style="margin-top:10px"><div class="empty">No notifications</div></div>
+    </div>
+  </div>
 
-doLoginBtn.addEventListener('click', ()=>{
-  const email = document.getElementById('lgEmail').value.trim();
-  const pass  = document.getElementById('lgPass').value;
-  if(!email || !pass){ alert('Fill in your email & password'); return; }
-  // FRONTEND-ONLY “session”
-  localStorage.setItem('novelite_user', JSON.stringify({email}));
-  closeLogin();
-  updateProfileNav();
-  alert('Welcome back! (frontend demo)');
-});
+  <!-- Login Modal -->
+  <div class="modal" id="loginModal">
+    <div class="modal-card">
+      <div class="modal-row"><h3>Login</h3><button class="close-x" data-close="loginModal">✕</button></div>
+      <div class="field"><input id="lgEmail" type="email" placeholder="Email"></div>
+      <div class="field"><input id="lgPass" type="password" placeholder="Password"></div>
+      <button class="btn" id="doLogin" style="width:100%">Login</button>
+    </div>
+  </div>
 
-function updateProfileNav(){
-  const u = localStorage.getItem('novelite_user');
-  if(u){
-    navProfile.querySelector('span').textContent = 'Profile';
-    navProfile.href = 'profile.html';
-  }else{
-    navProfile.href = '#';
-    navProfile.addEventListener('click', (e)=>{ e.preventDefault(); openLogin(); }, {once:true});
-  }
-}
-updateProfileNav();
+  <!-- Signup Modal -->
+  <div class="modal" id="signupModal">
+    <div class="modal-card">
+      <div class="modal-row"><h3>Signup</h3><button class="close-x" data-close="signupModal">✕</button></div>
+      <div class="field"><input id="suName" type="text" placeholder="Name"></div>
+      <div class="field"><input id="suEmail" type="email" placeholder="Email"></div>
+      <div class="field"><input id="suPass" type="password" placeholder="Password"></div>
+      <button class="btn" id="doSignup" style="width:100%">Create</button>
+    </div>
+  </div>
 
-/* ======= NAV ripple click ======= */
-document.querySelectorAll('.nav-btn').forEach(btn=>{
-  btn.addEventListener('click', function(e){
-    const rect = this.getBoundingClientRect();
-    const x = e.clientX - rect.left, y = e.clientY - rect.top;
-    const r = this.querySelector(':scope::after'); // not selectable
-    // DIY ripple
-    this.style.setProperty('--rx', x+'px');
-    this.style.setProperty('--ry', y+'px');
-    const pulse = document.createElement('span');
-    pulse.style.cssText = `
-      position:absolute; left:${x-4}px; top:${y-4}px; width:8px; height:8px; border-radius:999px;
-      background:rgba(255,215,0,.7); transform:scale(0); opacity:.9; pointer-events:none;
-      transition: transform .45s ease, opacity .6s ease;
-    `;
-    this.appendChild(pulse);
-    requestAnimationFrame(()=>{ pulse.style.transform='scale(18)'; pulse.style.opacity='0'; });
-    setTimeout(()=> pulse.remove(), 600);
-  });
-});
-</script>
+  <!-- Profile Modal -->
+  <div class="modal" id="profileModal">
+    <div class="modal-card">
+      <div class="modal-row"><h3>Your Profile</h3><button class="close-x" data-close="profileModal">✕</button></div>
+      <div class="profile-head">
+        <div class="avatar">👤</div>
+        <div><div id="pName" class="profile-name">Guest</div><div id="pEmail" class="profile-email">—</div></div>
+      </div>
+      <div class="profile-stats">
+        <div class="stat"><div class="stat-label">XP</div><div id="pXP" class="stat-value">0</div></div>
+        <div class="stat"><div class="stat-label">Gems</div><div id="pGems" class="stat-value">0</div></div>
+      </div>
+      <div style="margin-top:12px"><button class="btn" id="signOutBtn">Sign out</button></div>
+    </div>
+  </div>
+
+  <script src="home.js"></script>
 </body>
 </html>
