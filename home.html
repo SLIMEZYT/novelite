@@ -68,15 +68,32 @@
       </div>
     </section>
   </main>
-
   <!-- Bottom Nav -->
-  <nav class="bottom-nav" aria-label="Primary">
-    <a class="nav-btn active" id="navHome"><div class="ico">🏠</div><span>Home</span></a>
-    <a class="nav-btn" id="navBooks"><div class="ico">📖</div><span>Books</span></a>
-    <a class="nav-btn" id="navWrite"><div class="ico">✍️</div><span>Write</span></a>
-    <a class="nav-btn" id="navBlog"><div class="ico">📰</div><span>Blog</span></a>
-    <a class="nav-btn" id="navProfileBtn"><div class="ico">👤</div><span>Profile</span></a>
-  </nav>
+ <nav class="bottom-nav">
+  <a href="home.html" class="nav-btn active">
+    <span class="ico">🏠</span>
+    <span>Home</span>
+  </a>
+
+  <a href="under development.html" class="nav-btn">
+    <span class="ico">📖</span>
+    <span>Books</span>
+  </a>
+  <a href="under development.html" class="nav-btn">
+    <span class="ico">✍️</span>
+    <span>Write</span>
+  </a>
+
+  <a href="under development.html" class="nav-btn">
+    <span class="ico">📜</span>
+    <span>Chronicles</span>
+  </a>
+
+ <a class="nav-btn" id="navProfileBtn"><div class="ico">👤</div><span>Profile</span></a>
+  </a>
+</nav>
+
+  
 
   <footer class="site-footer">© Novelite 2025</footer>
 
@@ -88,26 +105,63 @@
     </div>
   </div>
 
-  <!-- Login Modal -->
-  <div class="modal" id="loginModal">
-    <div class="modal-card">
-      <div class="modal-row"><h3>Login</h3><button class="close-x" data-close="loginModal">✕</button></div>
-      <div class="field"><input id="lgEmail" type="email" placeholder="Email"></div>
-      <div class="field"><input id="lgPass" type="password" placeholder="Password"></div>
-      <button class="btn" id="doLogin" style="width:100%">Login</button>
+  <!-- Login Modal (Netlify Identity Ready) -->
+<div class="modal" id="loginModal">
+  <div class="modal-card">
+    <div class="modal-row">
+      <h3>Login</h3>
+      <button class="close-x" data-close="loginModal">✕</button>
     </div>
-  </div>
 
-  <!-- Signup Modal -->
-  <div class="modal" id="signupModal">
-    <div class="modal-card">
-      <div class="modal-row"><h3>Signup</h3><button class="close-x" data-close="signupModal">✕</button></div>
-      <div class="field"><input id="suName" type="text" placeholder="Name"></div>
-      <div class="field"><input id="suEmail" type="email" placeholder="Email"></div>
-      <div class="field"><input id="suPass" type="password" placeholder="Password"></div>
-      <button class="btn" id="doSignup" style="width:100%">Create</button>
+    <div class="field">
+      <input id="lgEmail" type="email" placeholder="Email">
     </div>
+
+    <div class="field">
+      <input id="lgPass" type="password" placeholder="Password">
+    </div>
+
+    <button class="btn" id="doLogin" style="width:100%">Login</button>
+
+    <div class="alt-link" style="margin-top:12px;text-align:center;">
+      <a id="goSignup" style="cursor:pointer;color:var(--green)">Create an account</a>
+    </div>
+
+    <div id="loginError" class="error-msg" style="display:none;margin-top:10px"></div>
   </div>
+</div>
+
+
+<!-- Signup Modal (Netlify Identity Ready) -->
+<div class="modal" id="signupModal">
+  <div class="modal-card">
+    <div class="modal-row">
+      <h3>Create Account</h3>
+      <button class="close-x" data-close="signupModal">✕</button>
+    </div>
+
+    <div class="field">
+      <input id="suName" type="text" placeholder="Display Name">
+    </div>
+
+    <div class="field">
+      <input id="suEmail" type="email" placeholder="Email">
+    </div>
+
+    <div class="field">
+      <input id="suPass" type="password" placeholder="Password">
+    </div>
+
+    <button class="btn" id="doSignup" style="width:100%">Create Account</button>
+
+    <div class="alt-link" style="margin-top:12px;text-align:center;">
+      <a id="goLogin" style="cursor:pointer;color:var(--green)">Already have an account? Login</a>
+    </div>
+
+    <div id="signupError" class="error-msg" style="display:none;margin-top:10px"></div>
+  </div>
+</div>
+
 
   <!-- Profile Modal -->
   <div class="modal" id="profileModal">
